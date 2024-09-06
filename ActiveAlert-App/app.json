@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "MyReactProject",
-    "slug": "MyReactProject",
+    "name": "MyFirstProject",
+    "slug": "MyFirstProject",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
