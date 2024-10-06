@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import styles from "./styles";
 import { LinearGradient } from "expo-linear-gradient";
 
-const AlarmScreen = () => {
+const AlarmScreen = ():React.JSX.Element => {
   const [isFirstSwitchOn, setIsFirstSwitchOn] = useState(false); // State for the first switch
   const [isSecondSwitchOn, setIsSecondSwitchOn] = useState(false); // State for the second switch
   // Function to toggle the first switch

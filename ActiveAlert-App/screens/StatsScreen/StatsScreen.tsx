@@ -2,7 +2,7 @@ import { View, Text } from 'react-native'
 import React from 'react'
 import styles from "./styles";
 
-const StatsScreen = () => {
+const StatsScreen = ():React.JSX.Element => {
   return (
     <View style={styles.container}>
       <View style={{ marginTop: 70, marginStart: 30 }}>

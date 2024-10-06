@@ -5,7 +5,7 @@ import { LinearGradient } from "expo-linear-gradient"; // Use expo's LinearGradi
 
 const manImage = require("../../assets/man.png");
 
-const HomeScreen = () => {
+const HomeScreen = ():React.JSX.Element => {
   const [isEnabled, setIsEnabled] = useState(false);
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
 

@@ -1,8 +1,9 @@
 import { View, Text, TouchableOpacity, Image, ScrollView } from "react-native";
 import React, { useState } from "react";
 import styles from "./styles";
+import WheelPickerExpo from 'react-native-wheel-picker-expo';
 
-const SetAlarmScreen = () => {
+const SetAlarmScreen = (): React.JSX.Element => {
   const [selectedDuration, setSelectedDuration] = useState(30); // Default 30 mins
   const [selectedDays, setSelectedDays] = useState<string[]>([]); // No day selected initially
   const [selectedBodyPart, setSelectedBodyPart] = useState<string | null>(null); // Default no body part selected
@@ -24,7 +25,6 @@ const SetAlarmScreen = () => {
   ];
 
   // Toggle day selection
-  // Toggle day selection with TypeScript
   const toggleDay = (day: string) => {
     setSelectedDays((prev: string[]) =>
       prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day]
@@ -42,6 +42,51 @@ const SetAlarmScreen = () => {
     }
   };
 
+  // Define arrays for hours, minutes, and AM/PM as objects with `label` and `value`
+  const hours = Array.from({ length: 12 }, (_, i) => ({
+    label: (i + 1).toString(),
+    value: i + 1,
+  })); // [{ label: "1", value: 1 }, ..., { label: "12", value: 12 }]
+
+  const minutes = Array.from({ length: 60 }, (_, i) => ({
+    label: i.toString().padStart(2, "0"),
+    value: i,
+  })); // [{ label: "00", value: 0 }, ..., { label: "59", value: 59 }]
+
+  const amPmOptions = [
+    { label: "AM", value: "AM" },
+    { label: "PM", value: "PM" },
+  ];
+
+  // States for selected time
+  const [selectedHour, setSelectedHour] = useState<number>(5); // Default hour
+  const [selectedMinute, setSelectedMinute] = useState<number>(30); // Default minute
+  const [selectedAmPm, setSelectedAmPm] = useState<string>("AM"); // Default AM/PM
+
+  // Function to handle hour change
+  const handleHourChange = (index: number) => {
+    const hourValue = hours[index]?.value;
+    if (hourValue !== undefined) {
+      setSelectedHour(hourValue);
+    }
+  };
+
+  // Function to handle minute change
+  const handleMinuteChange = (index: number) => {
+    const minuteValue = minutes[index]?.value;
+    if (minuteValue !== undefined) {
+      setSelectedMinute(minuteValue);
+    }
+  };
+
+  // Function to handle AM/PM change
+  const handleAmPmChange = (index: number) => {
+    const amPmValue = amPmOptions[index]?.value;
+    if (amPmValue !== undefined) {
+      setSelectedAmPm(amPmValue);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
@@ -54,19 +99,53 @@ const SetAlarmScreen = () => {
         </TouchableOpacity>
       </View>
 
-      <ScrollView style={styles.scrollContainer}>
+      <View style={styles.scrollContainer}>
         {/* Alarm Name */}
         <View style={styles.alarmNameContainer}>
           <Text style={styles.alarmNameText}>Alarm Name</Text>
-          <TouchableOpacity>
+          <TouchableOpacity >
             <Text style={styles.editIcon}>✏️</Text>
           </TouchableOpacity>
         </View>
 
         {/* Time Picker */}
         <View style={styles.timePickerContainer}>
-          <Text style={styles.timeText}>05 : 30</Text>
-          <Text style={styles.ampmText}>AM</Text>
+          <View style={styles.pickerRow}>
+            {/* Hour Picker */}
+            <WheelPickerExpo
+              height={150}
+              width={80}
+              initialSelectedIndex={selectedHour - 1}
+              items={hours.map(({ label }) => ({ label }))}
+              onChange={handleHourChange}
+              selectedStyle={{ color: 'blue', fontWeight: 'bold' }}
+              style={{ backgroundColor: '#F0FAFF' }}
+            />
+
+            <Text style={{ fontSize: 24 }}> : </Text>
+
+            {/* Minute Picker */}
+            <WheelPickerExpo
+              height={150}
+              width={80}
+              initialSelectedIndex={selectedMinute}
+              items={minutes.map(({ label }) => ({ label }))}
+              onChange={handleMinuteChange}
+              selectedStyle={{ color: 'blue', fontWeight: 'bold' }}
+              style={{ backgroundColor: '#F0FAFF' }}
+            />
+
+            {/* AM/PM Picker */}
+            <WheelPickerExpo
+              height={150}
+              width={80}
+              initialSelectedIndex={selectedAmPm === "AM" ? 0 : 1}
+              items={amPmOptions.map(({ label }) => ({ label }))}
+              onChange={handleAmPmChange}
+              selectedStyle={{ color: 'blue', fontWeight: 'bold' }}
+              style={{ backgroundColor: '#F0FAFF' }}
+            />
+          </View>
         </View>
 
         {/* Duration Buttons */}
@@ -140,7 +219,7 @@ const SetAlarmScreen = () => {
             ))}
           </View>
         </View>
-      </ScrollView>
+      </View>
     </View>
   );
 };

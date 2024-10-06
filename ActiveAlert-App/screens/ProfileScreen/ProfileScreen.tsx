@@ -5,7 +5,7 @@ import MaterialIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 const profileImage = require("../../assets/ProfileIcon.png");
 
-const ProfileScreen = () => {
+const ProfileScreen = ():React.JSX.Element => {
   return (
     <View style={styles.container}>
       <View style={{marginTop:70,marginStart:30}}>

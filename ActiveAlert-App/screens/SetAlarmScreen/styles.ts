@@ -40,6 +40,21 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginVertical: 20,
   },
+  pickerRow: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  colon: {
+    fontSize: 48,
+    fontWeight: "bold",
+    marginHorizontal: 10,
+  },
+  selectedText: {
+    fontSize: 30,
+    color: "#000",
+  },
+
   timeText: {
     fontSize: 48,
     fontWeight: "bold",
@@ -113,7 +128,7 @@ const styles = StyleSheet.create({
   bodyPartIcon: {
     width: 60,
     height: 60,
-    borderRadius:30,
+    borderRadius: 30,
   },
   bodyPartText: {
     marginTop: 5,
