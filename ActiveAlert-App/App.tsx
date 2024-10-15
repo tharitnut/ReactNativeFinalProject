@@ -34,7 +34,7 @@ function App(): React.JSX.Element {
     //   </Homestack.Navigator>
     // </NavigationContainer>
     <View style={{flex:1}}>
-      <SetAlarmScreen  />
+      <SetAlarmScreen/>
     </View>
   );
 }

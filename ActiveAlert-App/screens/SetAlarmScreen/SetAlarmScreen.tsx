@@ -44,9 +44,9 @@ const SetAlarmScreen = (): React.JSX.Element => {
 
   // Define arrays for hours, minutes, and AM/PM as objects with `label` and `value`
   const hours = Array.from({ length: 12 }, (_, i) => ({
-    label: (i + 1).toString(),
+    label: i.toString(),
     value: i + 1,
-  })); // [{ label: "1", value: 1 }, ..., { label: "12", value: 12 }]
+  })); // [{ label: "0", value: 0 }, ..., { label: "11", value: 11 }]
 
   const minutes = Array.from({ length: 60 }, (_, i) => ({
     label: i.toString().padStart(2, "0"),
@@ -115,7 +115,7 @@ const SetAlarmScreen = (): React.JSX.Element => {
             <WheelPickerExpo
               height={150}
               width={80}
-              initialSelectedIndex={selectedHour - 1}
+              initialSelectedIndex={selectedHour-1}
               items={hours.map(({ label }) => ({ label }))}
               onChange={handleHourChange}
               selectedStyle={{ color: 'blue', fontWeight: 'bold' }}
