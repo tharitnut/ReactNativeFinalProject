@@ -67,6 +67,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     marginVertical: 10,
+    marginStart: 10,
   },
   durationContainer: {
     marginBottom: 20,

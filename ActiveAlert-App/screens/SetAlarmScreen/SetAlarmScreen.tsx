@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity, Image, ScrollView } from "react-native";
 import React, { useState } from "react";
 import styles from "./styles";
-import WheelPickerExpo from 'react-native-wheel-picker-expo';
+import WheelPickerExpo from "react-native-wheel-picker-expo";
 
 const SetAlarmScreen = (): React.JSX.Element => {
   const [selectedDuration, setSelectedDuration] = useState(30); // Default 30 mins
@@ -59,8 +59,8 @@ const SetAlarmScreen = (): React.JSX.Element => {
   ];
 
   // States for selected time
-  const [selectedHour, setSelectedHour] = useState<number>(5); // Default hour
-  const [selectedMinute, setSelectedMinute] = useState<number>(30); // Default minute
+  const [selectedHour, setSelectedHour] = useState<number>(0); // Default hour
+  const [selectedMinute, setSelectedMinute] = useState<number>(0o0); // Default minute
   const [selectedAmPm, setSelectedAmPm] = useState<string>("AM"); // Default AM/PM
 
   // Function to handle hour change
@@ -103,7 +103,7 @@ const SetAlarmScreen = (): React.JSX.Element => {
         {/* Alarm Name */}
         <View style={styles.alarmNameContainer}>
           <Text style={styles.alarmNameText}>Alarm Name</Text>
-          <TouchableOpacity >
+          <TouchableOpacity>
             <Text style={styles.editIcon}>✏️</Text>
           </TouchableOpacity>
         </View>
@@ -115,11 +115,29 @@ const SetAlarmScreen = (): React.JSX.Element => {
             <WheelPickerExpo
               height={150}
               width={80}
-              initialSelectedIndex={selectedHour-1}
-              items={hours.map(({ label }) => ({ label }))}
-              onChange={handleHourChange}
-              selectedStyle={{ color: 'blue', fontWeight: 'bold' }}
-              style={{ backgroundColor: '#F0FAFF' }}
+              initialSelectedIndex={selectedHour - 1}
+              items={hours.map(({ label }) => ({
+                label,
+                value: label,
+              }))}
+              onChange={({ index }) => handleHourChange(index)}
+              selectedStyle={{
+                borderWidth: 2,
+                borderColor: "#7C4DFF",
+              }}
+              backgroundColor="#F0FAFF"
+              renderItem={(item, index) => (
+                <Text
+                  key={index}
+                  style={{
+                    fontSize: 20,
+                    color: index === selectedHour - 1 ? "#7C4DFF" : "#333", // Highlight selected item
+                    fontWeight: index === selectedHour - 1 ? "bold" : "normal",
+                  }}
+                >
+                  {item.label}
+                </Text>
+              )}
             />
 
             <Text style={{ fontSize: 24 }}> : </Text>
@@ -129,10 +147,25 @@ const SetAlarmScreen = (): React.JSX.Element => {
               height={150}
               width={80}
               initialSelectedIndex={selectedMinute}
-              items={minutes.map(({ label }) => ({ label }))}
-              onChange={handleMinuteChange}
-              selectedStyle={{ color: 'blue', fontWeight: 'bold' }}
-              style={{ backgroundColor: '#F0FAFF' }}
+              items={minutes.map(({ label }) => ({
+                label,
+                value: label,
+              }))}
+              onChange={({ index }) => handleHourChange(index)}
+              selectedStyle={{ borderWidth: 2, borderColor: "#7C4DFF" }}
+              backgroundColor="#F0FAFF"
+              renderItem={(item, index) => (
+                <Text
+                  key={index}
+                  style={{
+                    fontSize: 20,
+                    color: index === selectedHour - 1 ? "#7C4DFF" : "#333", // Highlight selected item
+                    fontWeight: index === selectedHour - 1 ? "bold" : "normal",
+                  }}
+                >
+                  {item.label}
+                </Text>
+              )}
             />
 
             {/* AM/PM Picker */}
@@ -140,10 +173,26 @@ const SetAlarmScreen = (): React.JSX.Element => {
               height={150}
               width={80}
               initialSelectedIndex={selectedAmPm === "AM" ? 0 : 1}
-              items={amPmOptions.map(({ label }) => ({ label }))}
-              onChange={handleAmPmChange}
-              selectedStyle={{ color: 'blue', fontWeight: 'bold' }}
-              style={{ backgroundColor: '#F0FAFF' }}
+              items={amPmOptions.map(({ label }) => ({
+                label,
+                value: label,
+                // You can optionally specify styles within each item, depending on the library.
+              }))}
+              onChange={({ index }) => handleHourChange(index)}
+              selectedStyle={{ borderWidth: 2, borderColor: "#7C4DFF" }}
+              backgroundColor="#F0FAFF"
+              renderItem={(item, index) => (
+                <Text
+                  key={index}
+                  style={{
+                    fontSize: 18,
+                    color: index === selectedHour - 1 ? "#7C4DFF" : "#333", // Highlight selected item
+                    fontWeight: index === selectedHour - 1 ? "bold" : "normal",
+                  }}
+                >
+                  {item.label}
+                </Text>
+              )}
             />
           </View>
         </View>
@@ -158,6 +207,7 @@ const SetAlarmScreen = (): React.JSX.Element => {
                 style={[
                   styles.durationButton,
                   selectedDuration === time && styles.selectedDurationButton,
+                  { flexBasis: "30%", marginBottom: 10, alignItems: "center" },
                 ]}
                 onPress={() => setSelectedDuration(time)}
               >

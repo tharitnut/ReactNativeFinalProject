@@ -1,29 +1,41 @@
-const userSchema = mongoose.Schema({
-    user_id: { 
-        type: String, 
-        required: true ,
-        unique: true
-    },
-    alram:{
-        type:String,
-    },
-    
-    favorite:{
-        type:[String],
-    },
-    history:{
-        type:[String],
-    },
-    score:{
-        E: { type: Number, default: 0 },
-        I: { type: Number, default: 0 },
-        S: { type: Number, default: 0 },
-        N: { type: Number, default: 0 },
-        T: { type: Number, default: 0 },
-        F: { type: Number, default: 0 },
-        J: { type: Number, default: 0 },
-        P: { type: Number, default: 0 },
-    },
-}, { versionKey: false })
+const mongoose = require("mongoose");
 
-module.exports = mongoose.model('users', userSchema);
+const userSchema = mongoose.Schema(
+  {
+    user_id: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    alram: {
+      type: String,
+    },
+    chestRecord: {
+      duration: Number,
+      cal: Number,
+    },
+    backRecord: {
+      duration: Number,
+      cal: Number,
+    },
+    armsRecord: {
+      duration: Number,
+      cal: Number,
+    },
+    abdominalRecord: {
+      duration: Number,
+      cal: Number,
+    },
+    legsRecord: {
+      duration: Number,
+      cal: Number,
+    },
+    shoulderRecord: {
+      duration: Number,
+      cal: Number,
+    },
+  },
+  { versionKey: false }
+);
+
+module.exports = mongoose.model("users", userSchema);
