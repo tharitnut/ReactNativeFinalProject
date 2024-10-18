@@ -1,41 +1,34 @@
 const mongoose = require("mongoose");
 
-const userSchema = mongoose.Schema(
+const alarmSchema = new mongoose.Schema(
   {
-    user_id: {
+    time: { type: String },
+    alert: { type: Boolean, default: false },
+    part: { type: String },
+    day: { type: [String], default: [] },
+    duration: { type: Number },
+  },
+  { _id: false }
+);
+
+const userSchema = new mongoose.Schema(
+  {
+    username: {
       type: String,
       required: true,
       unique: true,
     },
-    alram: {
+    password: {
       type: String,
+      required: true,
     },
-    chestRecord: {
-      duration: Number,
-      cal: Number,
-    },
-    backRecord: {
-      duration: Number,
-      cal: Number,
-    },
-    armsRecord: {
-      duration: Number,
-      cal: Number,
-    },
-    abdominalRecord: {
-      duration: Number,
-      cal: Number,
-    },
-    legsRecord: {
-      duration: Number,
-      cal: Number,
-    },
-    shoulderRecord: {
-      duration: Number,
-      cal: Number,
+    alarm: [alarmSchema],
+    bodyPart: {
+      type: [String],
+      default: [],
     },
   },
   { versionKey: false }
 );
 
-module.exports = mongoose.model("users", userSchema);
+module.exports = mongoose.model("User", userSchema);

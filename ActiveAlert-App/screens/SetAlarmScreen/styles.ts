@@ -125,6 +125,7 @@ const styles = StyleSheet.create({
   bodyPart: {
     alignItems: "center",
     marginHorizontal: 5,
+    padding:5
   },
   bodyPartIcon: {
     width: 60,

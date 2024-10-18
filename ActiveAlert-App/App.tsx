@@ -10,6 +10,7 @@ import HomeScreen from "./screens/HomeScreen/HomeScreen";
 import StatsScreen from "./screens/StatsScreen/StatsScreen";
 import AlarmScreen from "./screens/AlarmScreen/AlarmScreen";
 import SetAlarmScreen from "./screens/SetAlarmScreen/SetAlarmScreen";
+import LoginScreen from "./screens/LoginScreen/LoginScreen";
 
 function App(): React.JSX.Element {
   // const Homestack = createNativeStackNavigator();

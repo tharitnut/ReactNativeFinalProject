@@ -1,6 +1,4 @@
 import {
-  StyleSheet,
-  Dimensions,
   KeyboardAvoidingView,
   Platform,
   View,
@@ -17,6 +15,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { Controller, useForm } from "react-hook-form";
 import { Ionicons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { login } from "../../services/product-service";
 
 const LoginScreen = (): React.JSX.Element => {
   const [showPassword, setShowPassword] = useState(false);
@@ -43,6 +43,15 @@ const LoginScreen = (): React.JSX.Element => {
     mode: "all",
   });
 
+  const onLogin = async (data: any) => {
+    try {
+      const res = await login(data.username, data.password);
+      if (res.status === 200) {
+        // console.log('Login successfully!!');
+      }
+    } catch (error: any) {}
+  };
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -51,7 +60,7 @@ const LoginScreen = (): React.JSX.Element => {
     >
       <ScrollView contentContainerStyle={styles.scrollView}>
         <ImageBackground
-          source={require("../assets/Login.png")}
+          source={require("./Login.png")}
           style={styles.bgImage}
           resizeMode="cover"
         >
@@ -114,9 +123,7 @@ const LoginScreen = (): React.JSX.Element => {
                   styles.loginButton,
                   { opacity: isSubmitting ? 0.6 : 1 }, // Adjust opacity when submitting
                 ]}
-                onPress={handleSubmit((data) =>
-                  console.log("Form Data:", data)
-                )}
+                onPress={handleSubmit(onLogin)}
                 disabled={!isValid || isSubmitting}
                 accessible={true}
                 accessibilityLabel="Login"
@@ -150,4 +157,3 @@ const LoginScreen = (): React.JSX.Element => {
 };
 
 export default LoginScreen;
-

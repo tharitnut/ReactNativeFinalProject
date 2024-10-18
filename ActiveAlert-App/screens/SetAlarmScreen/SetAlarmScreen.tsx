@@ -2,11 +2,13 @@ import { View, Text, TouchableOpacity, Image, ScrollView } from "react-native";
 import React, { useState } from "react";
 import styles from "./styles";
 import WheelPickerExpo from "react-native-wheel-picker-expo";
+import { saveAlarm } from "../../services/product-service";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const SetAlarmScreen = (): React.JSX.Element => {
-  const [selectedDuration, setSelectedDuration] = useState(30); // Default 30 mins
+  const [selectedDuration, setSelectedDuration] = useState<Number>(30); // Default 30 mins
   const [selectedDays, setSelectedDays] = useState<string[]>([]); // No day selected initially
-  const [selectedBodyPart, setSelectedBodyPart] = useState<string | null>(null); // Default no body part selected
+  const [selectedBodyPart, setSelectedBodyPart] = useState<string | null>(''); // Default no body part selected
 
   // List of durations
   const durations = [10, 20, 30, 40, 50, 60];
@@ -87,6 +89,20 @@ const SetAlarmScreen = (): React.JSX.Element => {
     }
   };
 
+  const handleSaveAlarm = async () => {
+    const time = `${selectedHour-1}:${selectedMinute} ${selectedAmPm}`;
+    // const user = AsyncStorage.getItem('@username')
+    const username = 'Nigga5678'
+    const setAlarm = {
+      time: time,
+      alarm: true,
+      part: selectedBodyPart,
+      day: selectedDays,
+      durations: selectedDuration
+    };
+    const res = await saveAlarm(setAlarm,username)
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
@@ -94,20 +110,12 @@ const SetAlarmScreen = (): React.JSX.Element => {
           <Text style={styles.topText}>Cancel</Text>
         </TouchableOpacity>
         <Text style={styles.setAlarmTitle}>Set Alarm</Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => handleSaveAlarm()}>
           <Text style={styles.topText}>Save</Text>
         </TouchableOpacity>
       </View>
 
       <View style={styles.scrollContainer}>
-        {/* Alarm Name */}
-        <View style={styles.alarmNameContainer}>
-          <Text style={styles.alarmNameText}>Alarm Name</Text>
-          <TouchableOpacity>
-            <Text style={styles.editIcon}>✏️</Text>
-          </TouchableOpacity>
-        </View>
-
         {/* Time Picker */}
         <View style={styles.timePickerContainer}>
           <View style={styles.pickerRow}>
@@ -115,7 +123,7 @@ const SetAlarmScreen = (): React.JSX.Element => {
             <WheelPickerExpo
               height={150}
               width={80}
-              initialSelectedIndex={selectedHour - 1}
+              initialSelectedIndex={selectedHour}
               items={hours.map(({ label }) => ({
                 label,
                 value: label,
@@ -151,7 +159,7 @@ const SetAlarmScreen = (): React.JSX.Element => {
                 label,
                 value: label,
               }))}
-              onChange={({ index }) => handleHourChange(index)}
+              onChange={({ index }) => handleMinuteChange(index)}
               selectedStyle={{ borderWidth: 2, borderColor: "#7C4DFF" }}
               backgroundColor="#F0FAFF"
               renderItem={(item, index) => (
@@ -178,7 +186,7 @@ const SetAlarmScreen = (): React.JSX.Element => {
                 value: label,
                 // You can optionally specify styles within each item, depending on the library.
               }))}
-              onChange={({ index }) => handleHourChange(index)}
+              onChange={({ index }) => handleAmPmChange(index)}
               selectedStyle={{ borderWidth: 2, borderColor: "#7C4DFF" }}
               backgroundColor="#F0FAFF"
               renderItem={(item, index) => (
@@ -199,7 +207,7 @@ const SetAlarmScreen = (): React.JSX.Element => {
 
         {/* Duration Buttons */}
         <View style={styles.durationContainer}>
-          <Text style={styles.sectionTitle}>Time</Text>
+          <Text style={styles.sectionTitle}>Duration</Text>
           <View style={styles.durationButtons}>
             {durations.map((time) => (
               <TouchableOpacity
@@ -253,7 +261,11 @@ const SetAlarmScreen = (): React.JSX.Element => {
         {/* Body Part Selection */}
         <View style={styles.bodyPartContainer}>
           <Text style={styles.sectionTitle}>Select Body Part</Text>
-          <View style={styles.bodyPartsRow}>
+          <ScrollView
+            contentContainerStyle={styles.bodyPartsRow}
+            horizontal={true}
+            showsHorizontalScrollIndicator={false}
+          >
             {bodyParts.map((part) => (
               <TouchableOpacity
                 key={part.name}
@@ -267,7 +279,7 @@ const SetAlarmScreen = (): React.JSX.Element => {
                 <Text style={styles.bodyPartText}>{part.name}</Text>
               </TouchableOpacity>
             ))}
-          </View>
+          </ScrollView>
         </View>
       </View>
     </View>
