@@ -23,7 +23,6 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     fontSize: 24,
     fontWeight: "bold",
-    marginEnd: 10,
   },
   card: {
     backgroundColor: "#EBF0FF",
@@ -71,6 +70,34 @@ const styles = StyleSheet.create({
   },
   inactiveDay: {
     color: "#9E9E9E",
+  },
+  textActivity: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginStart: 10,
+  },
+  containerActivity: {
+    marginHorizontal: 40,
+    alignItems: "flex-start",
+  },
+  bodyPartIcon: {
+    width: 100,
+    height: 100,
+    borderRadius: 45,
+    marginTop: 20,
+  },
+  textStat: {
+    fontSize: 28,
+    fontWeight: "bold",
+    marginBottom: 5,
+  },
+  iconRight: {
+    marginTop: 10,
+    marginStart: 160,
+  },
+  iconConfetti: {
+    marginEnd: 15,
+    marginTop: 10,
   },
 });
 

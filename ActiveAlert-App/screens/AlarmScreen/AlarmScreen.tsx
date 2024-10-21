@@ -1,16 +1,62 @@
-import { View, Text, Switch, TouchableOpacity } from "react-native";
-import React, { useState } from "react";
+import { View, Text, Switch, TouchableOpacity, FlatList } from "react-native";
+import React, { useCallback, useState, useEffect } from "react";
 import styles from "./styles";
 import { LinearGradient } from "expo-linear-gradient";
+import { changeAlert, fetchtAlarm } from "../../services/product-service";
 
-const AlarmScreen = ():React.JSX.Element => {
-  const [isFirstSwitchOn, setIsFirstSwitchOn] = useState(false); // State for the first switch
-  const [isSecondSwitchOn, setIsSecondSwitchOn] = useState(false); // State for the second switch
-  // Function to toggle the first switch
-  const toggleFirstSwitch = () => setIsFirstSwitchOn((prev) => !prev);
+const AlarmScreen = (): React.JSX.Element => {
+  const [alarmData, setAlarmData] = useState<any[]>([]);
+  const [activeSwitch, setActiveSwitch] = useState<{ [key: number]: boolean }>(
+    {}
+  );
 
-  // Function to toggle the second switch
-  const toggleSecondSwitch = () => setIsSecondSwitchOn((prev) => !prev);
+  async function getData() {
+    const data = await fetchtAlarm();
+    setAlarmData(data.data.alarm);
+  }
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+  const toggleSwitch = async(index: number) => {
+    setActiveSwitch((prevState) => ({
+      ...prevState,
+      [index]: !prevState[index],
+    }));
+    const response = await changeAlert(index,activeSwitch)
+  };
+
+  const renderItem = ({ item, index }: { item: any; index: number }) => (
+    <View style={[styles.card, { marginTop: 0 }]}>
+      <View style={styles.topRow}>
+        <View>
+          <Text style={styles.alarmText}>{item.part} Workout</Text>
+          <Text style={styles.timeText}>{item.time}</Text>
+        </View>
+        <Switch
+          trackColor={{ false: "#767577", true: "#9747FF" }}
+          thumbColor={activeSwitch[index] ? "#FFFFFF" : "#f4f3f4"}
+          onValueChange={() => toggleSwitch(index)}
+          style={{ transform: [{ scaleX: 2 }, { scaleY: 2 }], marginStart: 80 }}
+          value={!!activeSwitch[index]}
+        />
+        <TouchableOpacity style={styles.menuButton}>
+          <Text style={styles.menuText}>⋮</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.dayRow}>
+        <Text style={styles.dayText}>
+          {item.day.map((data: string, i: number) => (
+            <Text key={i} style={{ color: "#7C6B6B" }}>
+              {data}{" "}
+            </Text>
+          ))}
+        </Text>
+      </View>
+    </View>
+  );
 
   return (
     <View style={styles.container}>
@@ -24,68 +70,14 @@ const AlarmScreen = ():React.JSX.Element => {
         <Text style={styles.alarmTitle}>Alarm</Text>
       </View>
 
-      {/* Card */}
-      <View style={[styles.card, { marginTop: 0 }]}>
-        <View style={styles.topRow}>
-          <View>
-            <Text style={styles.alarmText}>Chest Workout</Text>
-            <Text style={styles.timeText}>5:30 AM</Text>
-          </View>
-          <Switch
-            trackColor={{ false: "#767577", true: "#9747FF" }}
-            thumbColor={isFirstSwitchOn ? "#FFFFFF" : "#f4f3f4"}
-            onValueChange={toggleFirstSwitch}
-            style={{
-              transform: [{ scaleX: 2 }, { scaleY: 2 }],
-              marginStart: 80,
-            }}
-            value={isFirstSwitchOn}
-          />
-          <TouchableOpacity style={styles.menuButton}>
-            <Text style={styles.menuText}>⋮</Text>
-          </TouchableOpacity>
-        </View>
+      <FlatList
+        data={alarmData}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={renderItem}
+      />
 
-        {/* Days Row */}
-        <View style={styles.dayRow}>
-          <Text style={styles.dayText}>Mon Tue Thu Fri</Text>
-        </View>
-      </View>
-
-      {/* Card */}
-      <View style={[styles.card]}>
-        <View style={styles.topRow}>
-          <View>
-            <Text style={styles.alarmText}>Legs Workout</Text>
-            <Text style={styles.timeText}>6:30 AM</Text>
-          </View>
-          <Switch
-            trackColor={{ false: "#767577", true: "#9747FF" }}
-            thumbColor={isSecondSwitchOn ? "#FFFFFF" : "#f4f3f4"}
-            onValueChange={toggleSecondSwitch}
-            style={{
-              transform: [{ scaleX: 2 }, { scaleY: 2 }],
-              marginStart: 80,
-            }}
-            value={isSecondSwitchOn}
-          />
-          <TouchableOpacity style={styles.menuButton}>
-            <Text style={styles.menuText}>⋮</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Days Row */}
-        <View style={styles.dayRow}>
-          <Text style={styles.dayText}>Mon Wed Fri</Text>
-        </View>
-      </View>
-
-      {/* Plus Button */}
       <TouchableOpacity style={styles.plusButton}>
-        <LinearGradient
-          colors={["#9747FF", "#6F00FF"]} // Define your gradient colors here
-          style={styles.plusBg} // Apply the existing style
-        >
+        <LinearGradient colors={["#9747FF", "#6F00FF"]} style={styles.plusBg}>
           <Text style={styles.plusButtonText}>+</Text>
         </LinearGradient>
       </TouchableOpacity>

@@ -15,6 +15,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { Controller, useForm } from "react-hook-form";
 import { Ionicons } from "@expo/vector-icons";
+import { register } from "../../services/product-service";
 
 const RegisterScreen = (): React.JSX.Element => {
   const [showPassword, setShowPassword] = useState(false);
@@ -26,15 +27,26 @@ const RegisterScreen = (): React.JSX.Element => {
       .min(2, "Minimum 2 characters")
       .max(20, "Maximum 20 characters")
       .required("You must enter a username"),
-    email: yup
-      .string()
-      .required("Please input email")
-      .email("Email format is invalid."),
     password: yup
       .string()
       .required("Please input password")
       .min(6, "Password must be at least 6 characters."),
+    confirmPassword: yup
+      .string()
+      .required("Please input password")
+      .min(6, "Password must be at least 6 characters.")
+      .oneOf([yup.ref("password")], "Passwords must match"),
   });
+
+  const onRegister = async (data: any) => {
+    try {
+      const res = await register(data.username, data.password);
+      if (res.status === 200) {
+        console.log("Login successfully!!");
+        // navigation.navigate
+      }
+    } catch (error: any) {}
+  };
 
   const {
     control,
@@ -53,7 +65,7 @@ const RegisterScreen = (): React.JSX.Element => {
     >
       <ScrollView contentContainerStyle={styles.scrollView}>
         <ImageBackground
-          source={require("../assets/Sign up.png")}
+          source={require("../../assets/Sign_up.png")}
           style={styles.bgImage}
           resizeMode="cover"
         >
@@ -89,22 +101,6 @@ const RegisterScreen = (): React.JSX.Element => {
               />
 
               <Controller
-                name="email"
-                control={control}
-                render={({ field: { onBlur, onChange, value } }) => (
-                  <Input
-                    placeholder="Email"
-                    rightIcon={{ name: "mail-outline" }}
-                    keyboardType="email-address"
-                    onBlur={onBlur}
-                    onChangeText={onChange}
-                    value={value}
-                    errorMessage={errors.email?.message}
-                  />
-                )}
-              />
-
-              <Controller
                 name="password"
                 control={control}
                 render={({ field: { onBlur, onChange, value } }) => (
@@ -127,15 +123,36 @@ const RegisterScreen = (): React.JSX.Element => {
                 )}
               />
 
+              <Controller
+                name="confirmPassword"
+                control={control}
+                render={({ field: { onBlur, onChange, value } }) => (
+                  <Input
+                    placeholder="Confirm Password"
+                    rightIcon={
+                      <Icon
+                        name={showPassword ? "eye" : "eye-off"}
+                        type="feather"
+                        onPress={() => setShowPassword(!showPassword)}
+                      />
+                    }
+                    keyboardType="default"
+                    secureTextEntry={!showPassword}
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    value={value}
+                    errorMessage={errors.confirmPassword?.message}
+                  />
+                )}
+              />
+
               {/* Sign Up Button */}
               <TouchableOpacity
                 style={[
                   styles.signUpButton,
                   { opacity: isSubmitting ? 0.6 : 1 }, // Adjust opacity when submitting
                 ]}
-                onPress={handleSubmit((data) =>
-                  console.log("Form Data:", data)
-                )}
+                onPress={handleSubmit(onRegister)}
                 disabled={!isValid || isSubmitting}
                 accessible={true}
                 accessibilityLabel="Sign Up"
@@ -169,4 +186,3 @@ const RegisterScreen = (): React.JSX.Element => {
 };
 
 export default RegisterScreen;
-

@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
   dayRow: {
     marginTop: 12,
     paddingVertical: 8,
-    backgroundColor: "#CFD8DC",
+    backgroundColor: "#D5DBEE",
     borderBottomEndRadius: 10,
     borderBottomStartRadius: 10,
   },

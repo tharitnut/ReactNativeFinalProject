@@ -17,6 +17,7 @@ import { Controller, useForm } from "react-hook-form";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { login } from "../../services/product-service";
+import HomeScreen from "../HomeScreen/HomeScreen";
 
 const LoginScreen = (): React.JSX.Element => {
   const [showPassword, setShowPassword] = useState(false);
@@ -47,7 +48,8 @@ const LoginScreen = (): React.JSX.Element => {
     try {
       const res = await login(data.username, data.password);
       if (res.status === 200) {
-        // console.log('Login successfully!!');
+        console.log('Login successfully!!');
+        // navigation.navigate
       }
     } catch (error: any) {}
   };
@@ -60,7 +62,7 @@ const LoginScreen = (): React.JSX.Element => {
     >
       <ScrollView contentContainerStyle={styles.scrollView}>
         <ImageBackground
-          source={require("./Login.png")}
+          source={require("../../assets/Login.png")}
           style={styles.bgImage}
           resizeMode="cover"
         >

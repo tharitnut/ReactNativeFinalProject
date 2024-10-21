@@ -1,13 +1,29 @@
 import { View, Text, Image, Switch, TouchableOpacity } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./styles";
 import { LinearGradient } from "expo-linear-gradient"; // Use expo's LinearGradient
+import "react-circular-progressbar/dist/styles.css"; //progressbar
+import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
+import AntDesign from "@expo/vector-icons/AntDesign";
 
 const manImage = require("../../assets/man.png");
 
-const HomeScreen = ():React.JSX.Element => {
+
+const HomeScreen = (): React.JSX.Element => {
   const [isEnabled, setIsEnabled] = useState(false);
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
+
+  const iconConfetti = require("../../assets/fi-sr-confetti.png");
+
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setProgress((prev) => (prev < 100 ? prev + 10 : 100));
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -24,9 +40,9 @@ const HomeScreen = ():React.JSX.Element => {
         >
           <View style={{ flexDirection: "row" }}>
             <Text style={styles.dontText}>
-              Don't stop when you're tired STOP when you're DONE
+              Don't stop when{"\n"}you're tired STOP{"\n"}when you're DONE
             </Text>
-            <Image source={manImage} style={{ marginBottom: -20 }}></Image>
+            <Image source={manImage} style={{ marginBottom: -20,marginStart:30 }}></Image>
           </View>
         </LinearGradient>
       </View>
@@ -72,8 +88,25 @@ const HomeScreen = ():React.JSX.Element => {
             </Text>
           ))}
         </View>
+      </View>
 
+      {/* Activity */}
+      <View style={styles.containerActivity}>
+        <Text style={styles.textActivity}>My Activity</Text>
         
+      </View>
+
+      <View style={styles.card}>
+        <View style={{ flexDirection: "row" }}>
+          <Image source={iconConfetti} style={styles.iconConfetti} />
+          <Text style={styles.textStat}>My Stats</Text>
+          <AntDesign
+            name="right"
+            size={20}
+            color="black"
+            style={styles.iconRight}
+          />
+        </View>
       </View>
     </View>
   );

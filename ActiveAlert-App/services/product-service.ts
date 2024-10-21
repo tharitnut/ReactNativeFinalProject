@@ -16,10 +16,12 @@ export async function login(username:string,password:string): Promise<AxiosRespo
   }
 }
 
-export async function createUser(userData:any): Promise<AxiosResponse<any>> {
+export async function register(username:string,password:string): Promise<AxiosResponse<any>> {
   try {
+    console.log(username);
+    
     const response = await http.post<any>(
-      "http://10.0.2.2:5000/users/register",userData
+      "http://10.0.2.2:5000/users/register",{username:username,password:password}
     );
     return response;
   } catch (error) {
@@ -27,11 +29,39 @@ export async function createUser(userData:any): Promise<AxiosResponse<any>> {
   }
 }
 
-export async function saveAlarm(setAlarm:any,username:any): Promise<AxiosResponse<any>> {
+export async function insertAlarm(setAlarm:any,username:any): Promise<AxiosResponse<any>> {
   try {
     console.log(setAlarm)
     const response = await http.post<any>(
-      "http://10.0.2.2:5000/update/alarm",{setAlarm,username}
+      "http://10.0.2.2:5000/insert/alarm",{setAlarm,username}
+    );
+    return response;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function fetchtAlarm(): Promise<AxiosResponse<any>> {
+  try {
+    // const username = await AsyncStorage.getItem('@username')
+    const username = 'Nigga5678'
+    const response = await http.get<any>(
+      `http://10.0.2.2:5000/api/alarm/${username}`
+    );
+    return response;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function changeAlert(index:any,alerts:{ [key: number]: boolean }): Promise<AxiosResponse<any>> {
+  try {
+    // const username = await AsyncStorage.getItem('@username')
+    const username = 'Nigga5678'
+    const alert = !alerts[index]
+    
+    const response = await http.post<any>(
+      'http://10.0.2.2:5000/update/alert',{username,index,alert}
     );
     return response;
   } catch (error) {
