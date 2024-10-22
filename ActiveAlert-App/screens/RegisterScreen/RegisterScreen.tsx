@@ -16,9 +16,11 @@ import * as yup from "yup";
 import { Controller, useForm } from "react-hook-form";
 import { Ionicons } from "@expo/vector-icons";
 import { register } from "../../services/product-service";
+import { useNavigation } from "@react-navigation/native";
 
 const RegisterScreen = (): React.JSX.Element => {
   const [showPassword, setShowPassword] = useState(false);
+  const navigation = useNavigation<any>();
 
   // 1. define validation schema with Yup
   const schema = yup.object().shape({
@@ -43,7 +45,7 @@ const RegisterScreen = (): React.JSX.Element => {
       const res = await register(data.username, data.password);
       if (res.status === 200) {
         console.log("Login successfully!!");
-        // navigation.navigate
+        navigation.navigate("Login");
       }
     } catch (error: any) {}
   };
@@ -70,7 +72,12 @@ const RegisterScreen = (): React.JSX.Element => {
           resizeMode="cover"
         >
           <SafeAreaView>
-            <TouchableOpacity style={styles.backIcon}>
+            <TouchableOpacity
+              style={styles.backIcon}
+              onPress={() => {
+                navigation.navigate("FirstScreen");
+              }}
+            >
               <Ionicons name="arrow-back-outline" size={30} color="#1D1B20" />
             </TouchableOpacity>
             <View style={styles.titleContainer}>
@@ -168,7 +175,12 @@ const RegisterScreen = (): React.JSX.Element => {
             <View style={styles.memberContainer}>
               <Text style={styles.text}>Already have an account?</Text>
             </View>
-            <TouchableOpacity style={{ alignItems: "center" }}>
+            <TouchableOpacity
+              style={{ alignItems: "center" }}
+              onPress={() => {
+                navigation.navigate("Login");
+              }}
+            >
               <Text
                 style={[
                   styles.text,

@@ -19,12 +19,18 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "permissions": ["VIBRATE", "RECEIVE_BOOT_COMPLETED"]
+      "permissions": [
+        "VIBRATE",
+        "RECEIVE_BOOT_COMPLETED"
+      ],
+      "package": "com.activealert.alarmapp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "plugins": ["expo-notifications"],
+    "plugins": [
+      "expo-notifications"
+    ],
     "expo-notifications": {
       "icon": "./assets/favicon.png",
       "color": "#ffffff"

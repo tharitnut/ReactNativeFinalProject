@@ -4,10 +4,10 @@ const alarmSchema = new mongoose.Schema(
   {
     time: { type: Date },
     timeFormat: {type:String},
-    alert: { type: Boolean, default: false },
     part: { type: String },
     day: { type: [String], default: [] },
     duration: { type: Number },
+    alert: { type: Boolean, default: false },
   },
   { _id: false }
 );
@@ -24,10 +24,6 @@ const userSchema = new mongoose.Schema(
       required: true,
     },
     alarm: [alarmSchema],
-    bodyPart: {
-      type: [String],
-      default: [],
-    },
   },
   { versionKey: false }
 );

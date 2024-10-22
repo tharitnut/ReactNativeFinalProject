@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./styles";
 import { Text, Input, Icon } from "@rneui/base";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -17,10 +17,12 @@ import { Controller, useForm } from "react-hook-form";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { login } from "../../services/product-service";
-import HomeScreen from "../HomeScreen/HomeScreen";
+import { useNavigation } from "@react-navigation/native";
 
 const LoginScreen = (): React.JSX.Element => {
   const [showPassword, setShowPassword] = useState(false);
+
+  const navigation = useNavigation<any>();
 
   // 1. define validation schema with Yup
   const schema = yup.object().shape({
@@ -48,8 +50,8 @@ const LoginScreen = (): React.JSX.Element => {
     try {
       const res = await login(data.username, data.password);
       if (res.status === 200) {
-        console.log('Login successfully!!');
-        // navigation.navigate
+        console.log("Login successfully!!");
+        navigation.navigate("Home");
       }
     } catch (error: any) {}
   };
@@ -67,7 +69,12 @@ const LoginScreen = (): React.JSX.Element => {
           resizeMode="cover"
         >
           <SafeAreaView>
-            <TouchableOpacity style={styles.backIcon}>
+            <TouchableOpacity
+              style={styles.backIcon}
+              onPress={() => {
+                navigation.navigate("FirstScreen");
+              }}
+            >
               <Ionicons name="arrow-back-outline" size={30} color="#1D1B20" />
             </TouchableOpacity>
             <View style={styles.titleContainer}>
@@ -147,6 +154,9 @@ const LoginScreen = (): React.JSX.Element => {
                   styles.text,
                   { color: "#7C4DFF", textDecorationLine: "underline" },
                 ]}
+                onPress={() => {
+                  navigation.navigate("Register");
+                }}
               >
                 Sign up
               </Text>

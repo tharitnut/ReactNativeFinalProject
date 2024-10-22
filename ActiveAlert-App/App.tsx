@@ -1,21 +1,23 @@
-import { View, Text } from "react-native";
-import React, { useEffect } from "react";
+import { View, Text, Alert } from "react-native";
+import React, { useEffect, useState } from "react";
 
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-
-import FirstScreen from "./screens/FirstScreen/FirstScreen";
-import ProfileScreen from "./screens/ProfileScreen/ProfileScreen";
-import HomeScreen from "./screens/HomeScreen/HomeScreen";
-import StatsScreen from "./screens/StatsScreen/StatsScreen";
-import AlarmScreen from "./screens/AlarmScreen/AlarmScreen";
-import SetAlarmScreen from "./screens/SetAlarmScreen/SetAlarmScreen";
-import LoginScreen from "./screens/LoginScreen/LoginScreen";
-import RegisterScreen from "./screens/RegisterScreen/RegisterScreen";
-import { scheduleAlarmNotification } from "./components/notificationHelper";
-import { fetchtAlarm } from "./services/product-service";
+import Navigator from "./components/MainNavigator";
+import * as Notifications from "expo-notifications";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 function App(): React.JSX.Element {
+  
+
+  useEffect(() => {
+    Notifications.requestPermissionsAsync().then(({ status }) => {
+      if (status !== "granted") {
+        Alert.alert("Permission required", "Please enable notifications.");
+      }
+    });
+  }, []);
+
   // const Homestack = createNativeStackNavigator();
   // const setAlarm = async (date: Date) => {
   //   try {
@@ -25,19 +27,19 @@ function App(): React.JSX.Element {
   //     console.error("Failed to set alarm:", error);
   //   }
   // };
-  
+
   // async function getDate() {
   //   const res = await fetchtAlarm(); // ดึงข้อมูลจาก API
   //   const alarmTimeString = res.data.alarm[1].time;
-  
+
   //   console.log(`Before: ${typeof alarmTimeString} - ${alarmTimeString}`);
-  
+
   //   const alarmTimeDate = new Date(alarmTimeString);
   //   console.log(`After: ${typeof alarmTimeDate} - ${alarmTimeDate.toString()}`);
-  
+
   //   return alarmTimeDate;
   // }
-  
+
   // useEffect(() => {
   //   async function initializeAlarm() {
   //     try {
@@ -51,32 +53,19 @@ function App(): React.JSX.Element {
   //       console.error("Error initializing alarm:", error);
   //     }
   //   }
-  
+
   //   initializeAlarm();
   // }, []);
 
   return (
-    // <NavigationContainer>
-    //   <Homestack.Navigator
-    //     initialRouteName="Home"
-    //     screenOptions={{
-    //       //Global
-    //       headerStyle: { backgroundColor: "#20b2aa" },
-    //       headerTintColor: "white",
-    //       headerTitleStyle: { fontWeight: "bold" },
-    //       headerTitleAlign:'center',
-    //     }}
-    //   >
-    //     <Homestack.Screen
-    //       name="Home"
-    //       component={HomeScreen}
-    //       options={{ title: "Profile" }}
-    //     />
-    //   </Homestack.Navigator>
-    // </NavigationContainer>
-    <View style={{ flex: 1 }}>
-      <StatsScreen />
-    </View>
+    <>
+      <NavigationContainer>
+        <Navigator />
+      </NavigationContainer>
+      {/*<View style={{ flex: 1 }}>
+        <AlarmScreen />
+      </View>*/}
+    </>
   );
 }
 

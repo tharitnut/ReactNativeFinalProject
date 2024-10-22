@@ -43,8 +43,7 @@ export async function insertAlarm(setAlarm:any,username:any): Promise<AxiosRespo
 
 export async function fetchtAlarm(): Promise<AxiosResponse<any>> {
   try {
-    // const username = await AsyncStorage.getItem('@username')
-    const username = 'Nigga5678'
+    const username = await AsyncStorage.getItem('@username')
     const response = await http.get<any>(
       `http://10.0.2.2:5000/api/alarm/${username}`
     );

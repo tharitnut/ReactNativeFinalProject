@@ -11,6 +11,8 @@ import styles from "./styles";
 import WheelPickerExpo from "react-native-wheel-picker-expo";
 import { insertAlarm } from "../../services/product-service";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation } from "@react-navigation/native";
+import { scheduleAlarm } from "../../notificationHelper";
 
 const SetAlarmScreen = (): React.JSX.Element => {
   const [selectedDuration, setSelectedDuration] = useState<number>(30);
@@ -19,6 +21,8 @@ const SetAlarmScreen = (): React.JSX.Element => {
   const [selectedHour, setSelectedHour] = useState<number>(1);
   const [selectedMinute, setSelectedMinute] = useState<number>(0);
   const [selectedAmPm, setSelectedAmPm] = useState<string>("AM");
+
+  const navigation = useNavigation<any>();
 
   const durations = [10, 20, 30, 40, 50, 60];
   const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
@@ -60,26 +64,34 @@ const SetAlarmScreen = (): React.JSX.Element => {
     const alarmTime: Date = new Date();
     console.log(typeof alarmTime);
     alarmTime.setHours(hour, selectedMinute, 0, 0);
-    //GMT+7
-    console.log(typeof alarmTime);
+    console.log(selectedDuration);
+    //Auto GMT+7
 
     const username = await AsyncStorage.getItem("@username");
     const alarmData = {
       time: alarmTime,
+      timeFormat: selectedAmPm,
       part: selectedBodyPart,
       day: selectedDays,
-      durations: selectedDuration,
-      alarm: true,
+      duration: selectedDuration,
+      alert: true,
     };
 
     const res = await insertAlarm(alarmData, username || "UnknownUser");
+    await scheduleAlarm(alarmTime,selectedBodyPart,true);
+        Alert.alert('Alarms Set', 'Multiple alarms have been scheduled.');
     // Alert.alert("Alarm Set", `Alarm set for ${alarmTime.toLocaleTimeString()}`);
+    navigation.navigate("Alarm");
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
-        <TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate("Alarm");
+          }}
+        >
           <Text style={styles.topText}>Cancel</Text>
         </TouchableOpacity>
         <Text style={styles.setAlarmTitle}>Set Alarm</Text>

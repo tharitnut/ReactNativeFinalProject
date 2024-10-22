@@ -5,9 +5,9 @@ import { LinearGradient } from "expo-linear-gradient"; // Use expo's LinearGradi
 import "react-circular-progressbar/dist/styles.css"; //progressbar
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import { useNavigation } from "@react-navigation/native";
 
 const manImage = require("../../assets/man.png");
-
 
 const HomeScreen = (): React.JSX.Element => {
   const [isEnabled, setIsEnabled] = useState(false);
@@ -24,6 +24,8 @@ const HomeScreen = (): React.JSX.Element => {
 
     return () => clearInterval(interval);
   }, []);
+
+  const navigation = useNavigation<any>();
 
   return (
     <View style={styles.container}>
@@ -42,7 +44,10 @@ const HomeScreen = (): React.JSX.Element => {
             <Text style={styles.dontText}>
               Don't stop when{"\n"}you're tired STOP{"\n"}when you're DONE
             </Text>
-            <Image source={manImage} style={{ marginBottom: -20,marginStart:30 }}></Image>
+            <Image
+              source={manImage}
+              style={{ marginBottom: -20, marginStart: 30 }}
+            ></Image>
           </View>
         </LinearGradient>
       </View>
@@ -93,10 +98,14 @@ const HomeScreen = (): React.JSX.Element => {
       {/* Activity */}
       <View style={styles.containerActivity}>
         <Text style={styles.textActivity}>My Activity</Text>
-        
       </View>
 
-      <View style={styles.card}>
+      <TouchableOpacity
+        style={styles.card}
+        onPress={() => {
+          navigation.navigate("StatsScreen");
+        }}
+      >
         <View style={{ flexDirection: "row" }}>
           <Image source={iconConfetti} style={styles.iconConfetti} />
           <Text style={styles.textStat}>My Stats</Text>
@@ -107,7 +116,7 @@ const HomeScreen = (): React.JSX.Element => {
             style={styles.iconRight}
           />
         </View>
-      </View>
+      </TouchableOpacity>
     </View>
   );
 };

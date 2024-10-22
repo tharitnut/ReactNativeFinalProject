@@ -34,7 +34,7 @@ app.post("/insert/alarm", async (req, res) => {
   const { setAlarm, username } = req.body;
 
   try {
-    console.log(`Updating alarm for user: ${username}`);
+    console.log(`Updating alarm for user: ${setAlarm.duration}`);
 
     const response = await User.findOneAndUpdate(
       { username },
@@ -43,10 +43,10 @@ app.post("/insert/alarm", async (req, res) => {
           alarm: {
             time: setAlarm.time,
             timeFormat: setAlarm.timeFormat,
-            alert: setAlarm.alert,
             part: setAlarm.part,
             day: setAlarm.day,
             duration: setAlarm.duration,
+            alert: setAlarm.alert,
           },
         },
       }
