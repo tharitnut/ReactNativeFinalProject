@@ -18,6 +18,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  editProfile: {
+    alignItems: "flex-end",
+    marginRight:100
+  },
   profileImage: {
     width: 120,
     height: 120,

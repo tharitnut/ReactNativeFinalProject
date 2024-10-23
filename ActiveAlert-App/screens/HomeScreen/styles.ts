@@ -79,6 +79,7 @@ const styles = StyleSheet.create({
   containerActivity: {
     marginHorizontal: 40,
     alignItems: "flex-start",
+    marginTop:40
   },
   bodyPartIcon: {
     width: 100,

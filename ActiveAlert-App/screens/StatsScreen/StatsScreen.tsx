@@ -1,4 +1,11 @@
-import { View, Text, StyleSheet, ScrollView, Dimensions } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  Dimensions,
+  FlatList,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import { BarChart } from "react-native-chart-kit";
 import styles from "./styles";
@@ -10,12 +17,16 @@ const screenWidth = Dimensions.get("window").width;
 
 // รายชื่อวันในสัปดาห์
 const allDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+const allParts = ["Chest", "Back", "Arms", "Abdominal", "Legs", "Shoulders"];
 
 // เริ่มต้นค่าทุกวันเป็น 0
-const initialDayDurations: Record<string, number> = allDays.reduce((acc, day) => {
-  acc[day] = 0;
-  return acc;
-}, {} as Record<string, number>);
+const initialDayDurations: Record<string, number> = allDays.reduce(
+  (acc, day) => {
+    acc[day] = 0;
+    return acc;
+  },
+  {} as Record<string, number>
+);
 
 // กำหนดการตั้งค่าของ Chart
 const chartConfig = {
@@ -29,11 +40,27 @@ const chartConfig = {
 const StatsScreen = (): React.JSX.Element => {
   const [data, setData] = useState<ChartData | null>(null);
   const [alarmdata, setAlarmData] = useState<any>({});
+  const [calories, setCalories] = useState<any>([
+    { Chest: 0 },
+    { Back: 0 },
+    { Arms: 0 },
+    { Abdominal: 0 },
+    { Legs: 0 },
+    { Shoulders: 0 },
+  ]);
+  const [duration, setDuration] = useState<any>([
+    { Chest: 0 },
+    { Back: 0 },
+    { Arms: 0 },
+    { Abdominal: 0 },
+    { Legs: 0 },
+    { Shoulders: 0 },
+  ]);
 
   const getAlarm = async () => {
     const response = await fetchtAlarm();
-    setAlarmData(response.data.alarm)
-    const dayDurations = { ...initialDayDurations }; // สร้างสำเนาเพื่อแก้ไข
+    setAlarmData(response.data.alarm);
+    const dayDurations = { ...initialDayDurations }; // สำเนาของ dayDurations
 
     // รวมค่า duration ตามวัน
     response.data.alarm.forEach((entry: any) => {
@@ -41,6 +68,60 @@ const StatsScreen = (): React.JSX.Element => {
         dayDurations[day] += entry.duration;
       });
     });
+
+    // อัปเดตค่า calories ตามส่วนของร่างกาย
+    const updatedCalories = [...calories]; // สำเนาของ calories
+    const updatedDuration = [...duration]; // สำเนาของ duration
+
+    response.data.alarm.forEach((entry: any) => {
+      let caloriesPerMinute = 0;
+      switch (entry.part) {
+        case "Chest":
+          caloriesPerMinute = 9;
+          break;
+        case "Back":
+          caloriesPerMinute = 11;
+          break;
+        case "Arms":
+          caloriesPerMinute = 7;
+          break;
+        case "Abdominal":
+          caloriesPerMinute = 7;
+          break;
+        case "Legs":
+          caloriesPerMinute = 14;
+          break;
+        case "Shoulders":
+          caloriesPerMinute = 9;
+          break;
+        default:
+          break;
+      }
+
+      const caloriesPerPart = entry.duration * caloriesPerMinute;
+      const part = entry.part;
+      const duration = entry.duration;
+
+      // หา index ของส่วนที่ต้องการอัปเดต
+      const index = updatedCalories.findIndex(
+        (item: any) => item[part] !== undefined
+      );
+
+      if (index !== -1) {
+        updatedCalories[index] = {
+          ...updatedCalories[index],
+          [part]: caloriesPerPart,
+        };
+        updatedDuration[index] = {
+          ...updatedDuration[index],
+          [part]: duration,
+        };
+      }
+    });
+
+    // อัปเดต state
+    setCalories(updatedCalories);
+    setDuration(updatedDuration);
 
     // อัปเดตข้อมูล Chart
     setData({
@@ -53,16 +134,12 @@ const StatsScreen = (): React.JSX.Element => {
     });
   };
 
-  const calculateCal = async () => {
-    
-  }
-
   useEffect(() => {
     getAlarm();
   }, []);
 
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
       {/* Logo Section */}
       <View style={{ marginTop: 70, marginStart: 30 }}>
         <View style={{ flexDirection: "row" }}>
@@ -88,31 +165,21 @@ const StatsScreen = (): React.JSX.Element => {
       </View>
 
       {/* Workout Cards */}
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>Chest</Text>
-        <Text style={styles.cardDetail}>1.32 hours 226 kcal</Text>
-      </View>
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>Back</Text>
-        <Text style={styles.cardDetail}>1.32 hours 226 kcal</Text>
-      </View>
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>Arms</Text>
-        <Text style={styles.cardDetail}>1.32 hours 226 kcal</Text>
-      </View>
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>Abdominal</Text>
-        <Text style={styles.cardDetail}>1.32 hours 226 kcal</Text>
-      </View>
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>Legs</Text>
-        <Text style={styles.cardDetail}>1.32 hours 226 kcal</Text>
-      </View>
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>Shoulders</Text>
-        <Text style={styles.cardDetail}>1.32 hours 226 kcal</Text>
-      </View>
-    </ScrollView>
+      <FlatList
+        data={allParts}
+        keyExtractor={(item: any, index: any) => index.toString()}
+        renderItem={({ item, index }) => {
+          const cal = calories[index]?.[item] ?? 0;
+          const hour = (duration[index]?.[item] ?? 0)/60;
+          return (
+            <View style={styles.card}>
+              <Text style={styles.cardTitle}>{item}</Text>
+              <Text style={styles.cardDetail}>{hour==0?0:hour.toFixed(1)} {hour==1||hour==0?'hour':'hours'} {cal} cal</Text>
+            </View>
+          );
+        }}
+      />
+    </View>
   );
 };
 

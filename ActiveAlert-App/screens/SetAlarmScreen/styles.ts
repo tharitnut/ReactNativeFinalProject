@@ -78,10 +78,12 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   durationButton: {
+    width: "30%",
     padding: 10,
     backgroundColor: "#333",
     borderRadius: 8,
     margin: 5,
+    alignItems: "center",
   },
   selectedDurationButton: {
     backgroundColor: "#7C4DFF",
@@ -125,7 +127,7 @@ const styles = StyleSheet.create({
   bodyPart: {
     alignItems: "center",
     marginHorizontal: 5,
-    padding:5
+    padding: 5,
   },
   bodyPartIcon: {
     width: 60,
