@@ -170,11 +170,14 @@ const StatsScreen = (): React.JSX.Element => {
         keyExtractor={(item: any, index: any) => index.toString()}
         renderItem={({ item, index }) => {
           const cal = calories[index]?.[item] ?? 0;
-          const hour = (duration[index]?.[item] ?? 0)/60;
+          const hour = (duration[index]?.[item] ?? 0) / 60;
           return (
             <View style={styles.card}>
               <Text style={styles.cardTitle}>{item}</Text>
-              <Text style={styles.cardDetail}>{hour==0?0:hour.toFixed(1)} {hour==1||hour==0?'hour':'hours'} {cal} cal</Text>
+              <Text style={styles.cardDetail}>
+                {hour == 0 ? 0 : hour.toFixed(1)}{" "}
+                {hour == 1 || hour == 0 ? "hour" : "hours"} {cal} cal
+              </Text>
             </View>
           );
         }}

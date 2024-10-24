@@ -56,7 +56,7 @@ export async function fetchtAlarm(): Promise<AxiosResponse<any>> {
 export async function changeAlert(index:any,alerts:{ [key: number]: boolean }): Promise<AxiosResponse<any>> {
   try {
     // const username = await AsyncStorage.getItem('@username')
-    const username = 'Nigga5678'
+    const username = await AsyncStorage.getItem('@username')
     const alert = !alerts[index]
     
     const response = await http.post<any>(

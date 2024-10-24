@@ -41,7 +41,7 @@ const AlarmScreen = (): React.JSX.Element => {
   const renderItem = ({ item, index }: { item: any; index: number }) => {
     const date = new Date(item.time);
     return (
-      <View style={[styles.card, { marginTop: 0 }]}>
+      <View style={[styles.card]}>
         <View style={styles.topRow}>
           <View>
             <Text style={styles.alarmText}>{item.part} Workout</Text>
