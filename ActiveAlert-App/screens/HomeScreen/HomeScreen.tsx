@@ -1,4 +1,4 @@
-import { View, Text, Image, Switch, TouchableOpacity } from "react-native";
+import { View, Text, Image, Switch, TouchableOpacity, TextInput } from "react-native";
 import React, { useEffect, useState } from "react";
 import styles from "./styles";
 import { LinearGradient } from "expo-linear-gradient"; // Use expo's LinearGradient
@@ -8,14 +8,18 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import { useNavigation } from "@react-navigation/native";
 
 const manImage = require("../../assets/man.png");
+const iconConfetti = require("../../assets/fi-sr-confetti.png");
 
 const HomeScreen = (): React.JSX.Element => {
   const [isEnabled, setIsEnabled] = useState(false);
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
 
-  const iconConfetti = require("../../assets/fi-sr-confetti.png");
-
   const [progress, setProgress] = useState(0);
+
+  // BMI state management
+  const [height, setHeight] = useState<string>("");
+  const [weight, setWeight] = useState<string>("");
+  const [bmi, setBmi] = useState<number | null>(null);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -24,6 +28,24 @@ const HomeScreen = (): React.JSX.Element => {
 
     return () => clearInterval(interval);
   }, []);
+
+  // BMI Calculation
+  const calculateBMI = (): void => {
+    const h = parseFloat(height) / 100; // Convert height from cm to meters
+    const w = parseFloat(weight);
+
+    if (!isNaN(h) && !isNaN(w) && h > 0) {
+      const bmiValue = w / (h * h);
+      setBmi(parseFloat(bmiValue.toFixed(1))); // Round to 1 decimal place
+    }
+  };
+
+  // Function to get the color based on the BMI value
+  const getBMIColor = (bmi: number): string => {
+    if (bmi < 18.5) return "orange";
+    if (bmi > 25) return "red";
+    return "green";
+  };
 
   const navigation = useNavigation<any>();
 
@@ -52,54 +74,49 @@ const HomeScreen = (): React.JSX.Element => {
         </LinearGradient>
       </View>
 
-      <View style={styles.card}>
-        <View style={styles.topRow}>
-          <View>
-            <Text style={styles.alarmText}>Scheduled Alarm</Text>
-            <Text style={styles.timeText}>5:30 AM</Text>
-          </View>
-          <Switch
-            trackColor={{ false: "#767577", true: "#9747FF" }}
-            thumbColor={isEnabled ? "#FFFFFF" : "#f4f3f4"}
-            onValueChange={toggleSwitch}
-            style={{
-              transform: [{ scaleX: 2 }, { scaleY: 2 }],
-              marginStart: 80,
-            }}
-            value={isEnabled}
+      {/* BMI Cal */}
+      <View style={styles.bmiContainer}>
+        <Text style={styles.textBMI}>BMI Calculator</Text>
+
+        <View style={[styles.inputContainer,{marginTop:10}]}>
+          <Text>Height (cm)</Text>
+          <TextInput
+            style={styles.input}
+            keyboardType="numeric"
+            value={height}
+            onChangeText={setHeight}
+            placeholder="Enter height"
           />
-          <TouchableOpacity style={styles.menuButton}>
-            <Text style={styles.menuText}>⋮</Text>
-          </TouchableOpacity>
         </View>
 
-        {/* Days Row */}
-        <View style={styles.dayRow}>
-          {["S", "M", "T", "W", "T", "F", "S"].map((day, index) => (
-            <Text
-              key={index}
-              style={[
-                styles.dayText,
-                index === 1 ||
-                index === 2 ||
-                index === 3 ||
-                index === 4 ||
-                index === 5 // Active days logic
-                  ? styles.activeDay
-                  : styles.inactiveDay,
-              ]}
-            >
-              {day}
-            </Text>
-          ))}
+        <View style={styles.inputContainer}>
+          <Text>Weight (kg)</Text>
+          <TextInput
+            style={styles.input}
+            keyboardType="numeric"
+            value={weight}
+            onChangeText={setWeight}
+            placeholder="Enter weight"
+          />
         </View>
+
+        <TouchableOpacity style={styles.button} onPress={calculateBMI}>
+          <Text style={styles.buttonText}>Calculate</Text>
+        </TouchableOpacity>
+        <View style={styles.measurement}>
+          <Text style={[styles.measurementText,{color:'orange'}]}>Underweight</Text>
+          <Text style={[styles.measurementText,{color:'green'}]}>Normal</Text>
+          <Text style={[styles.measurementText,{color:'red'}]}>Overweight</Text>
+        </View>
+
+        {bmi !== null && (
+          <Text style={[styles.bmiResult, { color: getBMIColor(bmi) }]}>
+            {bmi}
+          </Text>
+        )}
       </View>
 
-      {/* Activity */}
-      <View style={styles.containerActivity}>
-        <Text style={styles.textActivity}>My Activity</Text>
-      </View>
-
+      {/* My Stats */}
       <TouchableOpacity
         style={styles.card}
         onPress={() => {
