@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const alarmSchema = new mongoose.Schema(
   {
     time: { type: Date },
-    timeFormat: {type:String},
+    timeFormat: { type: String },
     part: { type: String },
     day: { type: [String], default: [] },
     duration: { type: Number },
