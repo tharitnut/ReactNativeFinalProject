@@ -20,12 +20,13 @@ import {
   ImagePickerResponse,
   MediaType,
 } from "react-native-image-picker";
+import { getUsername } from "../../services/product-service";
 
 const profileImage = require("../../assets/ProfileIcon.png");
 
 const ProfileScreen = (): React.JSX.Element => {
   const navigation = useNavigation<any>();
-
+  const [username, setUsername] = useState<string | null>(null);
   const [selectedImage, setSelectedImage] = useState(profileImage);
   const [permission, requestPermission] = useCameraPermissions();
 
@@ -35,6 +36,14 @@ const ProfileScreen = (): React.JSX.Element => {
     maxHeight: 2000,
     maxWidth: 2000,
   };
+
+  useEffect(() => {
+    const fetchUsername = async () => {
+      const user = await getUsername();
+      setUsername(user);
+    };
+    fetchUsername();
+  }, []);
 
   const handleRequestPermission = async () => {
     if (!permission) {
@@ -108,7 +117,7 @@ const ProfileScreen = (): React.JSX.Element => {
         <Feather name="edit" size={24} color="black" />
       </TouchableOpacity>
       <View style={{ alignItems: "center" }}>
-        <Text style={styles.profileName}>David Sanchez</Text>
+        <Text style={styles.profileName}>{username}</Text>
       </View>
       <View style={{ alignItems: "center" }}>
         <TouchableOpacity

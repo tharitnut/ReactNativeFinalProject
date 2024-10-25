@@ -78,6 +78,12 @@ export async function changeAlert(index:any,alerts:{ [key: number]: boolean }): 
   }
 }
 
-function username(error?: Error | null | undefined, result?: string | null | undefined): void {
-  throw new Error("Function not implemented.");
+export async function getUsername(): Promise<string | null> {
+  try {
+    const username = await AsyncStorage.getItem('@username');
+    return username;
+  } catch (error) {
+    console.error("Failed to retrieve username from AsyncStorage", error);
+    return null;
+  }
 }
