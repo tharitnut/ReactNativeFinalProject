@@ -51,7 +51,10 @@ const LoginScreen = (): React.JSX.Element => {
       const res = await login(data.username, data.password);
       if (res.status === 200) {
         console.log("Login successfully!!");
-        navigation.navigate("TabContainer");
+        navigation.reset({
+          index: 0,
+          routes: [{ name: "TabContainer", params: { screen: "HomeScreen" } }],
+        });
       }
     } catch (error: any) {}
   };

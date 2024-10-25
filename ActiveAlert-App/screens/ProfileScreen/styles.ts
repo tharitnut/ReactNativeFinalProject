@@ -7,7 +7,7 @@ const styles = StyleSheet.create({
   },
   textLogo: {
     fontSize: 22,
-    fontWeight:  "bold",
+    fontWeight: "bold",
   },
   circleBorder: {
     backgroundColor: "#D5DBEE",
@@ -17,16 +17,20 @@ const styles = StyleSheet.create({
     height: 180,
     alignItems: "center",
     justifyContent: "center",
+    overflow: "hidden",
   },
   editProfile: {
     alignItems: "flex-end",
-    marginRight:100
+    marginRight: 100,
   },
   profileImage: {
     width: 120,
     height: 120,
-
     padding: 30,
+  },
+  profileImage2: {
+    width: '100%',
+    height: '100%',
   },
   profileName: {
     fontSize: 30,

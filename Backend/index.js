@@ -7,6 +7,8 @@ const router = express.Router();
 const port = 5000;
 const cors = require("cors");
 const User = require("./models/User");
+const multer = require("multer");
+const path = require("path");
 
 mongoose
   .connect(uri)
@@ -20,6 +22,49 @@ mongoose
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/"); // ไดเรกทอรีที่คุณต้องการบันทึกไฟล์
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${Date.now()}-${file.originalname}`); // ตั้งชื่อไฟล์ให้ไม่ซ้ำ
+  },
+});
+
+const upload = multer({ storage: storage });
+
+app.post("/upload/:userId", upload.single("image"), async (req, res) => {
+  try {
+    const username = req.params.userId;
+    console.log(username);
+    
+    console.log(req.file.path);
+
+    if (!req.file) {
+      return res.status(400).json({ error: "No file uploaded" });
+    }
+
+    const updatedUser = await User.findOneAndUpdate(
+      { username: username },
+      { image: req.file.path },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.json({
+      message: "Profile updated successfully",
+      user: updatedUser,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Upload failed" });
+  }
+});
 
 app.get("/api/alarm/:id", async (req, res) => {
   const username = req.params.id;
@@ -145,21 +190,31 @@ app.post("/users/register", async (req, res) => {
     let saveUser = new User({
       username: username,
       password: password,
-      alarm: {
-        time: "",
-        timeFormat: "",
-        alert: true,
-        part: "",
-        day: [null],
-        duration: 0,
-      },
-      bodyPart: [null],
+      image: "",
+      alarm: [],
     });
     saveUser.save();
     if (saveUser) {
       return res.status(200).json({ mess: "Registered Successfully" });
     }
     res.status(404).json({ message: "Something went wrong" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal Sever Error" });
+  }
+});
+
+app.get("/api/user/:userId", async (req, res) => {
+  try {
+    const username = req.params.userId;
+  console.log(username);
+
+    const response = await User.findOne({ username: username });
+    console.log(response);
+    if (response) {
+      return res.status(200).json(response);
+    }
+    res.status(404).json({ message: "User not found" });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Internal Sever Error" });

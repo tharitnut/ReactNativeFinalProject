@@ -5,91 +5,78 @@ import {
   Image,
   TouchableOpacity,
   Alert,
-  Button,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import styles from "./styles";
 import MaterialIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { CameraType, useCameraPermissions } from "expo-camera";
+import * as ImagePicker from "expo-image-picker";
 import Feather from "@expo/vector-icons/Feather";
+import { MediaType } from "react-native-image-picker";
 import {
-  launchCamera,
-  launchImageLibrary,
-  ImagePickerResponse,
-  MediaType,
-} from "react-native-image-picker";
-import { getUsername } from "../../services/product-service";
-
-const profileImage = require("../../assets/ProfileIcon.png");
+  getUserbyName,
+  getUsername,
+  insertProfile,
+} from "../../services/product-service";
 
 const ProfileScreen = (): React.JSX.Element => {
   const navigation = useNavigation<any>();
   const [username, setUsername] = useState<string | null>(null);
-  const [selectedImage, setSelectedImage] = useState(profileImage);
-  const [permission, requestPermission] = useCameraPermissions();
-
-  const imageOptions = {
-    mediaType: "photo" as MediaType,
-    includeBase64: false,
-    maxHeight: 2000,
-    maxWidth: 2000,
-  };
+  const [userdata, setUserdata] = useState<string | null>(null);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const formData = new FormData();
 
   useEffect(() => {
     const fetchUsername = async () => {
       const user = await getUsername();
+      const res = await getUserbyName();
       setUsername(user);
+      setUserdata(res.data.image);
     };
     fetchUsername();
-  }, []);
+  }, [selectedImage]);
 
-  const handleRequestPermission = async () => {
-    if (!permission) {
-      // Camera permissions are still loading
-      return false;
+  const pickImage = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== "granted") {
+      Alert.alert("Permission Denied", "We need access to your gallery to proceed.");
+      return;
     }
 
-    if (!permission.granted) {
-      // Request camera permissions
-      const { status } = await requestPermission();
-      return status === "granted";
-    }
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      quality: 1,
+    });
 
-    return true;
-  };
-
-  const openImagePicker = async () => {
-    const hasPermission = await handleRequestPermission();
-    if (hasPermission) {
-      launchImageLibrary(imageOptions, handleResponse);
-    }
-  };
-
-  const handleCameraLaunch = async () => {
-    const hasPermission = await handleRequestPermission();
-    if (hasPermission) {
-      launchCamera(imageOptions, handleResponse);
-    }
-  };
-
-  const handleResponse = (response: ImagePickerResponse) => {
-    if (response.didCancel) {
-      console.log("User cancelled image picker");
-    } else if (response.errorMessage) {
-      console.error("Image picker error: ", response.errorMessage);
-    } else if (response.assets && response.assets.length > 0) {
-      const imageUri = response.assets[0].uri;
+    if (!result.canceled) {
+      const imageUri = result.assets[0].uri;
       setSelectedImage(imageUri);
-    } else {
-      console.warn("Unexpected response structure: ", response);
+
+      try {
+        const formData = new FormData();
+        const uriParts = imageUri.split(".");
+        const fileType = uriParts[uriParts.length - 1];
+
+        formData.append("image", {
+          uri: imageUri,
+          name: `photo.${fileType}`,
+          type: `image/${fileType}`,
+        } as any);
+
+        await insertProfile(formData);
+      } catch (error: any) {
+        console.error("Upload failed", error);
+        const message = error.response?.data?.message || "Something went wrong.";
+        Alert.alert("Upload Failed", message);
+      }
     }
   };
 
   const handleLogout = async () => {
     await AsyncStorage.removeItem("@username");
-    navigation.navigate('LoginStack')
+    navigation.navigate("LoginStack");
   };
 
   return (
@@ -100,17 +87,35 @@ const ProfileScreen = (): React.JSX.Element => {
           <Text style={[styles.textLogo, { color: "#7C4DFF" }]}>Alert</Text>
         </View>
       </View>
+
       <View style={{ alignItems: "center" }}>
         <View style={styles.circleBorder}>
-          <Image source={profileImage} style={styles.profileImage} />
+          {selectedImage ? (
+            <Image
+              source={{ uri: selectedImage }}
+              style={styles.profileImage2}
+            />
+          ) : userdata ? (
+            <Image
+              source={{
+                uri: `http://10.0.2.2:5000/${userdata.replace(/\\/g, "/")}`,
+              }}
+              style={styles.profileImage2}
+            />
+          ) : (
+            <Image
+              source={require("../../assets/default.png")}
+              style={styles.profileImage}
+            />
+          )}
         </View>
       </View>
       <TouchableOpacity
         style={styles.editProfile}
         onPress={() => {
           Alert.alert("Edit Profile", "Choose an option", [
-            { text: "Choose from Device", onPress: openImagePicker },
-            { text: "Open Camera", onPress: handleCameraLaunch },
+            { text: "Cancel", onPress: () => {} },
+            { text: "Choose from Device", onPress: pickImage },
           ]);
         }}
       >

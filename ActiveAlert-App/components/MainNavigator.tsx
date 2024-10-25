@@ -130,19 +130,18 @@ const RootNavigator = () => {
   useEffect(() => {
     getUser();
   }, []);
-
+  
   if (loading) {
-    return null; // Optionally render a loading spinner or screen here
+    return null;
   }
 
   return (
-    <Stack.Navigator initialRouteName="LoginStack">
+    <Stack.Navigator initialRouteName={isLoggedIn ? "TabContainer" : "LoginStack"}>
       <Stack.Screen
         name="TabContainer"
         component={TabContainer}
         options={{ headerShown: false }}
       />
-
       <Stack.Screen
         name="LoginStack"
         component={LoginStackScreen}
