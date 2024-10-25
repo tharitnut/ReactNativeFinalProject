@@ -78,6 +78,11 @@ const ProfileScreen = (): React.JSX.Element => {
     }
   };
 
+  const handleLogout = async () => {
+    await AsyncStorage.removeItem("@username");
+    navigation.navigate('LoginStack')
+  };
+
   return (
     <View style={styles.container}>
       <View style={{ marginTop: 70, marginStart: 30 }}>
@@ -124,10 +129,7 @@ const ProfileScreen = (): React.JSX.Element => {
 
         <TouchableOpacity
           style={styles.logoutButton}
-          onPress={async () => {
-            await AsyncStorage.removeItem("@username");
-            navigation.navigate("FirstProfileScreen");
-          }}
+          onPress={async () => handleLogout()}
         >
           <MaterialIcons name="logout" size={24} color="#C847F4" />
           <Text style={styles.logoutButtonText}> Logout</Text>

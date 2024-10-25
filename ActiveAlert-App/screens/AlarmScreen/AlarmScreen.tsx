@@ -1,17 +1,31 @@
-import { View, Text, Switch, TouchableOpacity, FlatList } from "react-native";
+import {
+  View,
+  Text,
+  Switch,
+  TouchableOpacity,
+  FlatList,
+  Alert,
+} from "react-native";
 import React, { useCallback, useState, useEffect } from "react";
 import styles from "./styles";
 import { LinearGradient } from "expo-linear-gradient";
-import { changeAlert, fetchtAlarm } from "../../services/product-service";
-import { useNavigation } from "@react-navigation/native";
+import {
+  changeAlert,
+  deleteAlarm,
+  fetchtAlarm,
+} from "../../services/product-service";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import Modal from "react-native-modal";
 
 const AlarmScreen = (): React.JSX.Element => {
   const [alarmData, setAlarmData] = useState<any[]>([]);
   const [activeSwitch, setActiveSwitch] = useState<{ [key: number]: boolean }>(
     {}
   );
-
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+  const [selectedAlarm, setSelectedAlarm] = useState<number | null>(null);
+  const [selectedIndex, setSelectedIndex] = useState<number | null>();
 
   const navigation = useNavigation<any>();
 
@@ -26,9 +40,11 @@ const AlarmScreen = (): React.JSX.Element => {
     }
   }
 
-  useEffect(() => {
-    getData();
-  }, [navigation]);
+  useFocusEffect(
+    useCallback(() => {
+      getData();
+    }, [])
+  );
 
   const toggleSwitch = async (index: number) => {
     setActiveSwitch((prevState) => ({
@@ -36,6 +52,31 @@ const AlarmScreen = (): React.JSX.Element => {
       [index]: !prevState[index],
     }));
     const response = await changeAlert(index, activeSwitch);
+  };
+
+  const handleMenuButtonClick = (index: number) => {
+    setSelectedAlarm(index);
+    setIsModalVisible(true);
+  };
+
+  const handleDeleteAlarm = (index: Number | null) => {
+    Alert.alert("Delete Alarm", "Are you sure you want to delete this alarm?", [
+      {
+        text: "Cancel",
+        style: "cancel",
+      },
+      {
+        text: "Delete",
+        onPress: () => {
+          setAlarmData((prevAlarms) =>
+            prevAlarms.filter((_, i) => i !== selectedAlarm)
+          );
+          setIsModalVisible(false);
+          deleteAlarm(index);
+        },
+        style: "destructive",
+      },
+    ]);
   };
 
   const renderItem = ({ item, index }: { item: any; index: number }) => {
@@ -60,7 +101,13 @@ const AlarmScreen = (): React.JSX.Element => {
             }}
             value={!activeSwitch[index]}
           />
-          <TouchableOpacity style={styles.menuButton}>
+          <TouchableOpacity
+            style={styles.menuButton}
+            onPress={() => {
+              handleMenuButtonClick(index);
+              setSelectedIndex(index);
+            }}
+          >
             <Text style={styles.menuText}>⋮</Text>
           </TouchableOpacity>
         </View>
@@ -108,6 +155,22 @@ const AlarmScreen = (): React.JSX.Element => {
           <Text style={styles.plusButtonText}>+</Text>
         </LinearGradient>
       </TouchableOpacity>
+
+      <Modal
+        isVisible={isModalVisible}
+        onBackdropPress={() => setIsModalVisible(false)}
+      >
+        <View style={styles.modalContent}>
+          <TouchableOpacity
+            onPress={() => handleDeleteAlarm(selectedIndex ?? null)}
+          >
+            <Text style={styles.modalText}>Delete Alarm</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => setIsModalVisible(false)}>
+            <Text style={styles.modalText}>Cancel</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
     </View>
   );
 };

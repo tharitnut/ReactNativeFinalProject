@@ -6,11 +6,12 @@ import {
   Dimensions,
   FlatList,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { BarChart } from "react-native-chart-kit";
 import styles from "./styles";
 import { fetchtAlarm } from "../../services/product-service";
 import { ChartData } from "react-native-chart-kit/dist/HelperTypes";
+import { useFocusEffect } from "@react-navigation/native";
 
 // ขนาดหน้าจอ
 const screenWidth = Dimensions.get("window").width;
@@ -134,9 +135,11 @@ const StatsScreen = (): React.JSX.Element => {
     });
   };
 
-  useEffect(() => {
-    getAlarm();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      getAlarm();
+    }, [])
+  );
 
   return (
     <View style={styles.container}>
@@ -157,6 +160,8 @@ const StatsScreen = (): React.JSX.Element => {
             width={screenWidth - 40}
             height={220}
             chartConfig={chartConfig}
+            yAxisLabel=""
+            yAxisSuffix=" cal"
             style={styles.chart}
           />
         ) : (

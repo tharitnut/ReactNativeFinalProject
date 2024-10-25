@@ -88,6 +88,16 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     lineHeight: 35,
   },
+  modalContent: {
+    backgroundColor: "white",
+    padding: 20,
+    borderRadius: 10,
+  },
+  modalText: {
+    fontSize: 18,
+    marginBottom: 10,
+    textAlign: "center",
+  },
 });
 
 export default styles;

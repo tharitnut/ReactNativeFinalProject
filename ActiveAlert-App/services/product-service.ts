@@ -19,7 +19,6 @@ export async function login(username:string,password:string): Promise<AxiosRespo
 export async function register(username:string,password:string): Promise<AxiosResponse<any>> {
   try {
     console.log(username);
-    
     const response = await http.post<any>(
       "http://10.0.2.2:5000/users/register",{username:username,password:password}
     );
@@ -34,6 +33,18 @@ export async function insertAlarm(setAlarm:any,username:any): Promise<AxiosRespo
     console.log(setAlarm)
     const response = await http.post<any>(
       "http://10.0.2.2:5000/insert/alarm",{setAlarm,username}
+    );
+    return response;
+  } catch (error) {
+    throw error;
+  }
+}
+export async function deleteAlarm(index: Number|null): Promise<AxiosResponse<any>> {
+  try {
+    const username = await AsyncStorage.getItem('@username')
+    console.log(index);
+    const response = await http.post<any>(
+      "http://10.0.2.2:5000/delete/alarm",{username,index}
     );
     return response;
   } catch (error) {
@@ -55,9 +66,8 @@ export async function fetchtAlarm(): Promise<AxiosResponse<any>> {
 
 export async function changeAlert(index:any,alerts:{ [key: number]: boolean }): Promise<AxiosResponse<any>> {
   try {
-    // const username = await AsyncStorage.getItem('@username')
     const username = await AsyncStorage.getItem('@username')
-    const alert = !alerts[index]
+    const alert = alerts[index]
     
     const response = await http.post<any>(
       'http://10.0.2.2:5000/update/alert',{username,index,alert}
@@ -66,4 +76,8 @@ export async function changeAlert(index:any,alerts:{ [key: number]: boolean }): 
   } catch (error) {
     throw error;
   }
+}
+
+function username(error?: Error | null | undefined, result?: string | null | undefined): void {
+  throw new Error("Function not implemented.");
 }

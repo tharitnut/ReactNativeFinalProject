@@ -96,6 +96,30 @@ app.post("/update/alert", async (req, res) => {
   }
 });
 
+app.post("/delete/alarm", async (req, res) => {
+  try {
+    const { username, index } = req.body;
+
+    // ค้นหาผู้ใช้และลบ alarm ที่ตำแหน่ง index
+    const user = await User.findOneAndUpdate(
+      { username: username }, // ค้นหาผู้ใช้ด้วย username
+      { $unset: { [`alarm.${index}`]: 1 } }, // ลบ alarm ที่ index ที่ระบุ
+      { new: true } // คืนค่าผู้ใช้หลังการอัปเดต
+    );
+
+    // ลบตำแหน่งว่างใน array ที่เกิดจากการ unset
+    await User.updateOne(
+      { username: username },
+      { $pull: { alarm: null } } // ลบค่า null ใน array alarm
+    );
+
+    res.status(200).json({ message: "Alarm deleted successfully", user });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 app.post("/users/login", async (req, res) => {
   try {
     const { username, password } = req.body;
