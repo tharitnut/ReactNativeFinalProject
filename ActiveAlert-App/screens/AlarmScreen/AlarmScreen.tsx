@@ -81,13 +81,17 @@ const AlarmScreen = (): React.JSX.Element => {
 
   const renderItem = ({ item, index }: { item: any; index: number }) => {
     const date = new Date(item.time);
+    let hours = date.getHours();
+    let timeFormat = item.timeFormat;
+    if (timeFormat === "PM" && hours > 12) hours -= 12;
+    if (timeFormat === "AM" && hours === 12) hours = 0;
     return (
       <View style={[styles.card]}>
         <View style={styles.topRow}>
           <View>
             <Text style={styles.alarmText}>{item.part} Workout</Text>
             <Text style={styles.timeText}>
-              {date.getHours()}:{String(date.getMinutes()).padStart(2, "0")}{" "}
+              {hours}:{String(date.getMinutes()).padStart(2, "0")}{" "}
               {item.timeFormat}
             </Text>
           </View>
@@ -166,6 +170,7 @@ const AlarmScreen = (): React.JSX.Element => {
           >
             <Text style={styles.modalText}>Delete Alarm</Text>
           </TouchableOpacity>
+          <View style={styles.divider} />
           <TouchableOpacity onPress={() => setIsModalVisible(false)}>
             <Text style={styles.modalText}>Cancel</Text>
           </TouchableOpacity>

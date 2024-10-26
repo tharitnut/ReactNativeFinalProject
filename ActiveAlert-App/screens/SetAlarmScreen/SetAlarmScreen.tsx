@@ -12,7 +12,7 @@ import WheelPickerExpo from "react-native-wheel-picker-expo";
 import { insertAlarm } from "../../services/product-service";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
-import { scheduleAlarm } from "../../notificationHelper";
+import { scheduleRepeatingAlarmNotification } from "../../components/notificationHelper";
 
 const SetAlarmScreen = (): React.JSX.Element => {
   const [selectedDuration, setSelectedDuration] = useState<number>(30);
@@ -57,17 +57,16 @@ const SetAlarmScreen = (): React.JSX.Element => {
   };
 
   const handleSaveAlarm = async () => {
-    let hour = selectedHour;
-    if (selectedAmPm === "PM" && hour < 12) hour += 12;
-    if (selectedAmPm === "AM" && hour === 12) hour = 0;
+    let hours = selectedHour;
+    if (selectedAmPm === "PM" && hours < 12) hours += 12;
+    if (selectedAmPm === "AM" && hours === 12) hours = 0;
 
     const alarmTime: Date = new Date();
-    console.log(typeof alarmTime);
-    alarmTime.setHours(hour, selectedMinute, 0, 0);
-    console.log(selectedDuration);
+    alarmTime.setHours(hours, selectedMinute, 0, 0);
     //Auto GMT+7
 
-    const username = await AsyncStorage.getItem("@username");
+    if (selectedDays&&selectedBodyPart) {
+      const username = await AsyncStorage.getItem("@username");
     const alarmData = {
       time: alarmTime,
       timeFormat: selectedAmPm,
@@ -78,10 +77,42 @@ const SetAlarmScreen = (): React.JSX.Element => {
     };
 
     const res = await insertAlarm(alarmData, username || "UnknownUser");
-    await scheduleAlarm(alarmTime,selectedBodyPart,true);
+    let dayIndex=1
+    selectedDays.forEach(async(day)=>{
+      switch (day) {
+        case 'Sun':
+          dayIndex=1
+          break;
+        case 'Mon':
+          dayIndex=2
+          break;
+        case 'Tue':
+          dayIndex=3
+          break;
+        case 'Wed':
+          dayIndex=4
+          break;
+        case 'Thu':
+          dayIndex=5
+          break;
+        case 'Fri':
+          dayIndex=6
+          break;
+        case 'Sat':
+          dayIndex=7
+          break;
+        default:
+          break;
+      }
+      await scheduleRepeatingAlarmNotification(dayIndex,{hour:hours,minute:selectedMinute});
+    })
         Alert.alert('Alarms Set', 'Multiple alarms have been scheduled.');
     // Alert.alert("Alarm Set", `Alarm set for ${alarmTime.toLocaleTimeString()}`);
     navigation.navigate("Alarm");
+    }
+    else{
+      Alert.alert('Incomplete Fields', 'Please make sure all fields are filled in before continuing.');
+    }
   };
 
   return (

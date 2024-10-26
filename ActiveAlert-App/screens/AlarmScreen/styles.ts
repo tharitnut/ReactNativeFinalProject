@@ -98,6 +98,11 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     textAlign: "center",
   },
+  divider: {
+    height: 1,
+    backgroundColor: "#000000",
+    marginVertical: 10,
+  },
 });
 
 export default styles;

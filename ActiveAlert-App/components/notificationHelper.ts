@@ -1,7 +1,8 @@
 import * as Notifications from "expo-notifications";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { Platform } from "react-native";
 
+// Setting up notification handler
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
@@ -10,18 +11,24 @@ Notifications.setNotificationHandler({
   }),
 });
 
-export async function scheduleAlarmNotification(date: Date) {
+// Function to set up repeating alarm
+export async function scheduleRepeatingAlarmNotification(weekday: number, time: { hour: number; minute: number }) {
   await Notifications.scheduleNotificationAsync({
     content: {
       title: "Alarm ⏰",
       body: "It's time to wake up!",
       sound: true,
     },
-    trigger: date,
+    trigger: {
+      weekday, // e.g., 2 for Monday, 3 for Tuesday
+      hour: time.hour,
+      minute: time.minute,
+      repeats: true,
+    },
   });
 }
 
-// ขอ permission สำหรับการแจ้งเตือน
+// Request permission for notifications
 export async function requestNotificationPermissions() {
   const settings = await Notifications.getPermissionsAsync();
   if (!settings.granted) {
@@ -29,6 +36,12 @@ export async function requestNotificationPermissions() {
   }
 }
 
-useEffect(() => {
-  requestNotificationPermissions();
-}, []);
+const NotificationComponent = () => {
+  useEffect(() => {
+    requestNotificationPermissions();
+  }, []);
+
+  return null; // Return null since it's a setup component
+};
+
+export default NotificationComponent;
