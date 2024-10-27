@@ -19,6 +19,23 @@
  └─ ActiveAlert-app  # app source
 ```
 
+###
+
+<h2 align="left">Features</h2>
+
+###
+
+<div>
+  <p><strong>1. BMI Calculation</strong><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Calculate BMI and display weight status.</p>
+  <p><strong>2. Calories Burned</strong><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Track the number of hours and calories burned in various body parts.</p>
+  <p><strong>3. Exercise Reminder</strong><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Set workout reminders with the option to choose specific body parts for exercise.</p>
+  <p><strong>4. Graph Display</strong><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Visualize the calories burned in a chart format.</p>
+</div>
+
 ## Demo
 
 ActiveAlert App Prototype : https://shorturl.at/ZCot9
