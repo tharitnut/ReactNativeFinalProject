@@ -65,53 +65,58 @@ const SetAlarmScreen = (): React.JSX.Element => {
     alarmTime.setHours(hours, selectedMinute, 0, 0);
     //Auto GMT+7
 
-    if (selectedDays&&selectedBodyPart) {
+    if (selectedDays && selectedBodyPart) {
       const username = await AsyncStorage.getItem("@username");
-    const alarmData = {
-      time: alarmTime,
-      timeFormat: selectedAmPm,
-      part: selectedBodyPart,
-      day: selectedDays,
-      duration: selectedDuration,
-      alert: true,
-    };
+      const alarmData = {
+        time: alarmTime,
+        timeFormat: selectedAmPm,
+        part: selectedBodyPart,
+        day: selectedDays,
+        duration: selectedDuration,
+        alert: true,
+      };
 
-    const res = await insertAlarm(alarmData, username || "UnknownUser");
-    let dayIndex=1
-    selectedDays.forEach(async(day)=>{
-      switch (day) {
-        case 'Sun':
-          dayIndex=1
-          break;
-        case 'Mon':
-          dayIndex=2
-          break;
-        case 'Tue':
-          dayIndex=3
-          break;
-        case 'Wed':
-          dayIndex=4
-          break;
-        case 'Thu':
-          dayIndex=5
-          break;
-        case 'Fri':
-          dayIndex=6
-          break;
-        case 'Sat':
-          dayIndex=7
-          break;
-        default:
-          break;
-      }
-      await scheduleRepeatingAlarmNotification(dayIndex,{hour:hours,minute:selectedMinute});
-    })
-        Alert.alert('Alarms Set', 'Multiple alarms have been scheduled.');
-    // Alert.alert("Alarm Set", `Alarm set for ${alarmTime.toLocaleTimeString()}`);
-    navigation.navigate("Alarm");
-    }
-    else{
-      Alert.alert('Incomplete Fields', 'Please make sure all fields are filled in before continuing.');
+      const res = await insertAlarm(alarmData, username || "UnknownUser");
+      let dayIndex = 1;
+      selectedDays.forEach(async (day) => {
+        switch (day) {
+          case "Sun":
+            dayIndex = 1;
+            break;
+          case "Mon":
+            dayIndex = 2;
+            break;
+          case "Tue":
+            dayIndex = 3;
+            break;
+          case "Wed":
+            dayIndex = 4;
+            break;
+          case "Thu":
+            dayIndex = 5;
+            break;
+          case "Fri":
+            dayIndex = 6;
+            break;
+          case "Sat":
+            dayIndex = 7;
+            break;
+          default:
+            break;
+        }
+        await scheduleRepeatingAlarmNotification(dayIndex, {
+          hour: hours,
+          minute: selectedMinute,
+        });
+      });
+      Alert.alert("Alarms Set", "Multiple alarms have been scheduled.");
+      // Alert.alert("Alarm Set", `Alarm set for ${alarmTime.toLocaleTimeString()}`);
+      navigation.navigate("Alarm");
+    } else {
+      Alert.alert(
+        "Incomplete Fields",
+        "Please make sure all fields are filled in before continuing."
+      );
     }
   };
 

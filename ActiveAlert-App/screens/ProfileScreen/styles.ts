@@ -29,8 +29,8 @@ const styles = StyleSheet.create({
     padding: 30,
   },
   profileImage2: {
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
   },
   profileName: {
     fontSize: 30,

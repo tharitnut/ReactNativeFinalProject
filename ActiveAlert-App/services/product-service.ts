@@ -125,11 +125,15 @@ export async function insertProfile(
 ): Promise<AxiosResponse<any>> {
   try {
     const userId = await AsyncStorage.getItem("@username");
-    const response = await http.post(`http://10.0.2.2:5000/upload/${userId}`, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
+    const response = await http.post(
+      `http://10.0.2.2:5000/upload/${userId}`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
     return response;
   } catch (error) {
     console.error("Error inserting profile:", error);

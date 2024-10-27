@@ -12,7 +12,10 @@ Notifications.setNotificationHandler({
 });
 
 // Function to set up repeating alarm
-export async function scheduleRepeatingAlarmNotification(weekday: number, time: { hour: number; minute: number }) {
+export async function scheduleRepeatingAlarmNotification(
+  weekday: number,
+  time: { hour: number; minute: number }
+) {
   await Notifications.scheduleNotificationAsync({
     content: {
       title: "Alarm ⏰",

@@ -8,8 +8,6 @@ import * as Notifications from "expo-notifications";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 function App(): React.JSX.Element {
-  
-
   useEffect(() => {
     Notifications.requestPermissionsAsync().then(({ status }) => {
       if (status !== "granted") {
@@ -17,45 +15,6 @@ function App(): React.JSX.Element {
       }
     });
   }, []);
-
-  // const Homestack = createNativeStackNavigator();
-  // const setAlarm = async (date: Date) => {
-  //   try {
-  //     await scheduleAlarmNotification(date);
-  //     alert(`Alarm set for ${date.toLocaleTimeString()}`);
-  //   } catch (error) {
-  //     console.error("Failed to set alarm:", error);
-  //   }
-  // };
-
-  // async function getDate() {
-  //   const res = await fetchtAlarm(); // ดึงข้อมูลจาก API
-  //   const alarmTimeString = res.data.alarm[1].time;
-
-  //   console.log(`Before: ${typeof alarmTimeString} - ${alarmTimeString}`);
-
-  //   const alarmTimeDate = new Date(alarmTimeString);
-  //   console.log(`After: ${typeof alarmTimeDate} - ${alarmTimeDate.toString()}`);
-
-  //   return alarmTimeDate;
-  // }
-
-  // useEffect(() => {
-  //   async function initializeAlarm() {
-  //     try {
-  //       const alarmDate = await getDate();
-  //       if (alarmDate instanceof Date && !isNaN(alarmDate.getTime())) {
-  //         await setAlarm(alarmDate);
-  //       } else {
-  //         console.error("Invalid date from API");
-  //       }
-  //     } catch (error) {
-  //       console.error("Error initializing alarm:", error);
-  //     }
-  //   }
-
-  //   initializeAlarm();
-  // }, []);
 
   return (
     <>

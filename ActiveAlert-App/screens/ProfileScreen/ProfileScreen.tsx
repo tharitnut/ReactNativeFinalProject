@@ -1,5 +1,4 @@
 import {
-  StyleSheet,
   Text,
   View,
   Image,
@@ -13,7 +12,6 @@ import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as ImagePicker from "expo-image-picker";
 import Feather from "@expo/vector-icons/Feather";
-import { MediaType } from "react-native-image-picker";
 import {
   getUserbyName,
   getUsername,
@@ -40,7 +38,10 @@ const ProfileScreen = (): React.JSX.Element => {
   const pickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
-      Alert.alert("Permission Denied", "We need access to your gallery to proceed.");
+      Alert.alert(
+        "Permission Denied",
+        "We need access to your gallery to proceed."
+      );
       return;
     }
 
@@ -68,7 +69,8 @@ const ProfileScreen = (): React.JSX.Element => {
         await insertProfile(formData);
       } catch (error: any) {
         console.error("Upload failed", error);
-        const message = error.response?.data?.message || "Something went wrong.";
+        const message =
+          error.response?.data?.message || "Something went wrong.";
         Alert.alert("Upload Failed", message);
       }
     }

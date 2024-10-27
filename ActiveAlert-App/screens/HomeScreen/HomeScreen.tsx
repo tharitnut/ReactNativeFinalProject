@@ -1,4 +1,10 @@
-import { View, Text, Image, Switch, TouchableOpacity, TextInput } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  TextInput,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import styles from "./styles";
 import { LinearGradient } from "expo-linear-gradient"; // Use expo's LinearGradient
@@ -78,7 +84,7 @@ const HomeScreen = (): React.JSX.Element => {
       <View style={styles.bmiContainer}>
         <Text style={styles.textBMI}>BMI Calculator</Text>
 
-        <View style={[styles.inputContainer,{marginTop:10}]}>
+        <View style={[styles.inputContainer, { marginTop: 10 }]}>
           <Text>Height (cm)</Text>
           <TextInput
             style={styles.input}
@@ -104,9 +110,15 @@ const HomeScreen = (): React.JSX.Element => {
           <Text style={styles.buttonText}>Calculate</Text>
         </TouchableOpacity>
         <View style={styles.measurement}>
-          <Text style={[styles.measurementText,{color:'orange'}]}>Underweight</Text>
-          <Text style={[styles.measurementText,{color:'green'}]}>Normal</Text>
-          <Text style={[styles.measurementText,{color:'red'}]}>Overweight</Text>
+          <Text style={[styles.measurementText, { color: "orange" }]}>
+            Underweight
+          </Text>
+          <Text style={[styles.measurementText, { color: "green" }]}>
+            Normal
+          </Text>
+          <Text style={[styles.measurementText, { color: "red" }]}>
+            Overweight
+          </Text>
         </View>
 
         {bmi !== null && (

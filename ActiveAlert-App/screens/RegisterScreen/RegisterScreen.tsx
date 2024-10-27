@@ -22,7 +22,7 @@ const RegisterScreen = (): React.JSX.Element => {
   const [showPassword, setShowPassword] = useState(false);
   const navigation = useNavigation<any>();
 
-  // 1. define validation schema with Yup
+  // define validation schema with Yup
   const schema = yup.object().shape({
     username: yup
       .string()

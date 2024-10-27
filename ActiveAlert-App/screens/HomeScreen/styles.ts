@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   measurementText: {
-    fontSize:16
+    fontSize: 16,
   },
   bmiResult: {
     marginTop: 20,
@@ -101,7 +101,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
   },
-
 });
 
 export default styles;

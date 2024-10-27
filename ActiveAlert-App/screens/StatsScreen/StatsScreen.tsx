@@ -1,8 +1,6 @@
 import {
   View,
   Text,
-  StyleSheet,
-  ScrollView,
   Dimensions,
   FlatList,
 } from "react-native";

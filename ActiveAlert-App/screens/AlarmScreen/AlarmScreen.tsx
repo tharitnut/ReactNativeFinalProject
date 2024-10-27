@@ -6,7 +6,7 @@ import {
   FlatList,
   Alert,
 } from "react-native";
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useCallback, useState } from "react";
 import styles from "./styles";
 import { LinearGradient } from "expo-linear-gradient";
 import {
