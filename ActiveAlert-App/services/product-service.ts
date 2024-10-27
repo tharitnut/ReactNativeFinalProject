@@ -38,13 +38,17 @@ export async function register(
 
 export async function insertAlarm(
   setAlarm: any,
-  username: any
+  username: any,
+  startNotifyId: any,
+  endNotifyId: any
 ): Promise<AxiosResponse<any>> {
   try {
     console.log(setAlarm);
     const response = await http.post<any>("http://10.0.2.2:5000/insert/alarm", {
       setAlarm,
       username,
+      startNotifyId,
+      endNotifyId,
     });
     return response;
   } catch (error) {

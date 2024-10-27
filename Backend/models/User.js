@@ -8,6 +8,8 @@ const alarmSchema = new mongoose.Schema(
     day: { type: [String], default: [] },
     duration: { type: Number },
     alert: { type: Boolean, default: false },
+    startNotifyId: {type:String},
+    endNotifyId: {type:String},
   },
   { _id: false }
 );

@@ -16,6 +16,7 @@ import {
 } from "../../services/product-service";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import Modal from "react-native-modal";
+import { cancelSelectedAlarm } from "../../components/notificationHelper";
 
 const AlarmScreen = (): React.JSX.Element => {
   const [alarmData, setAlarmData] = useState<any[]>([]);
@@ -34,6 +35,7 @@ const AlarmScreen = (): React.JSX.Element => {
       const data = await fetchtAlarm();
       setAlarmData(data.data.alarm);
       setIsRefreshing(true);
+      setDefaultActiveSwitch(data.data.alarm);
     } catch (error) {
     } finally {
       setIsRefreshing(false);
@@ -46,12 +48,25 @@ const AlarmScreen = (): React.JSX.Element => {
     }, [])
   );
 
+  async function setDefaultActiveSwitch(alarm: any) {
+    alarm.forEach((element: any, index: number) => {
+      setActiveSwitch((prevState) => ({
+        ...prevState,
+        [index]: !element.alert,
+      }));
+    });
+  }
+
   const toggleSwitch = async (index: number) => {
+    const response = await changeAlert(index, activeSwitch);
     setActiveSwitch((prevState) => ({
       ...prevState,
-      [index]: !prevState[index],
+      [index]: !response.data.data.alarm[index].alert,
     }));
-    const response = await changeAlert(index, activeSwitch);
+    await cancelSelectedAlarm(
+      response.data.data.alarm[index].startNotifyId,
+      response.data.data.alarm[index].endNotifyId
+    );
   };
 
   const handleMenuButtonClick = (index: number) => {
@@ -85,37 +100,40 @@ const AlarmScreen = (): React.JSX.Element => {
     let timeFormat = item.timeFormat;
     if (timeFormat === "PM" && hours > 12) hours -= 12;
     if (timeFormat === "AM" && hours === 12) hours = 0;
+
     return (
       <View style={[styles.card]}>
         <View style={styles.topRow}>
-          <View>
+          <View style={{ flex: 2 }}>
             <Text style={styles.alarmText}>{item.part} Workout</Text>
             <Text style={styles.timeText}>
               {hours}:{String(date.getMinutes()).padStart(2, "0")}{" "}
               {item.timeFormat}
             </Text>
           </View>
-          <Switch
-            trackColor={{ false: "#767577", true: "#9747FF" }}
-            thumbColor={activeSwitch[index] ? "#FFFFFF" : "#f4f3f4"}
-            onValueChange={() => toggleSwitch(index)}
-            style={{
-              transform: [{ scaleX: 2 }, { scaleY: 2 }],
-              marginStart: 80,
-            }}
-            value={!activeSwitch[index]}
-          />
-          <TouchableOpacity
-            style={styles.menuButton}
-            onPress={() => {
-              handleMenuButtonClick(index);
-              setSelectedIndex(index);
-            }}
-          >
-            <Text style={styles.menuText}>⋮</Text>
-          </TouchableOpacity>
+          <View style={{flex:2,flexDirection:'row'}}>
+            <Switch
+              trackColor={{ false: "#767577", true: "#9747FF" }}
+              thumbColor={activeSwitch[index] ? "#FFFFFF" : "#f4f3f4"}
+              onValueChange={() => toggleSwitch(index)}
+              style={{
+                transform: [{ scaleX: 2 }, { scaleY: 2 }],
+                marginStart: 60,
+                marginEnd: 30
+              }}
+              value={!activeSwitch[index]}
+            />
+            <TouchableOpacity
+              style={styles.menuButton}
+              onPress={() => {
+                handleMenuButtonClick(index);
+                setSelectedIndex(index);
+              }}
+            >
+              <Text style={styles.menuText}>⋮</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-
         <View style={styles.dayRow}>
           <Text style={styles.dayText}>
             {item.day.map((data: string, i: number) => (

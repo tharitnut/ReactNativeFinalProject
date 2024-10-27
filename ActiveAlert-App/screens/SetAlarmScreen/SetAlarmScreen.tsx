@@ -76,7 +76,6 @@ const SetAlarmScreen = (): React.JSX.Element => {
         alert: true,
       };
 
-      const res = await insertAlarm(alarmData, username || "UnknownUser");
       let dayIndex = 1;
       selectedDays.forEach(async (day) => {
         switch (day) {
@@ -104,7 +103,7 @@ const SetAlarmScreen = (): React.JSX.Element => {
           default:
             break;
         }
-        await scheduleRepeatingAlarmNotification(
+        const { startNotificationId, endNotificationId } = await scheduleRepeatingAlarmNotification(
           dayIndex,
           {
             hour: hours,
@@ -113,6 +112,7 @@ const SetAlarmScreen = (): React.JSX.Element => {
           selectedDuration,
           selectedBodyPart
         );
+        const res = await insertAlarm(alarmData, username || "UnknownUser",startNotificationId, endNotificationId);
       });
       Alert.alert("Alarms Set", "Multiple alarms have been scheduled.");
       // Alert.alert("Alarm Set", `Alarm set for ${alarmTime.toLocaleTimeString()}`);

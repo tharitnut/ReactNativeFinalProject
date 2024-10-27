@@ -2,7 +2,7 @@ import * as Notifications from "expo-notifications";
 import React, { useEffect } from "react";
 import { Platform } from "react-native";
 
-// Setting up notification handler
+// การตั้งค่า notification handler
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
@@ -11,15 +11,14 @@ Notifications.setNotificationHandler({
   }),
 });
 
-// Function to set up repeating alarm
+// ฟังก์ชันการตั้งปลุกซ้ำ
 export async function scheduleRepeatingAlarmNotification(
   weekday: number,
   time: { hour: number; minute: number },
   duration: number,
-  part: String
+  part: String,
 ) {
-  
-  await Notifications.scheduleNotificationAsync({
+  const startNotificationId = await Notifications.scheduleNotificationAsync({
     content: {
       title: "ActiveAlert ⏰",
       body: `It's time for ${part} workout!`,
@@ -33,12 +32,15 @@ export async function scheduleRepeatingAlarmNotification(
       repeats: true,
     },
   });
+
   const endTime = new Date();
-  endTime.setHours(time.hour, time.minute + duration, 0);
-  console.log(endTime.getHours()+':'+endTime.getMinutes());
-  
-  // Schedule end-of-session alert
-  await Notifications.scheduleNotificationAsync({
+  endTime.setHours(time.hour, time.minute + duration);
+  if (endTime.getMinutes() >= 60) {
+    endTime.setHours(endTime.getHours() + Math.floor(endTime.getMinutes() / 60));
+    endTime.setMinutes(endTime.getMinutes() % 60);
+  }
+
+  const endNotificationId = await Notifications.scheduleNotificationAsync({
     content: {
       title: "Workout Complete 💪",
       body: `Your ${part} workout session is now over!`,
@@ -52,22 +54,49 @@ export async function scheduleRepeatingAlarmNotification(
       repeats: true,
     },
   });
+
+  // ส่งคืน ID ของการแจ้งเตือนเริ่มและสิ้นสุดเพื่อจัดเก็บในฐานข้อมูล
+  return { startNotificationId, endNotificationId };
 }
 
-// Request permission for notifications
-export async function requestNotificationPermissions() {
-  const settings = await Notifications.getPermissionsAsync();
-  if (!settings.granted) {
-    await Notifications.requestPermissionsAsync();
+// ฟังก์ชันยกเลิกปลุกที่เลือกโดยใช้ notificationId
+export async function cancelSelectedAlarm(startId: string, endId: string) {
+  if (startId) {
+    await Notifications.cancelScheduledNotificationAsync(startId);
+  }
+  if (endId) {
+    await Notifications.cancelScheduledNotificationAsync(endId);
   }
 }
 
-const NotificationComponent = () => {
-  useEffect(() => {
-    requestNotificationPermissions();
-  }, []);
+// ตัวอย่างการใช้งานการตั้งปลุกใหม่และเก็บ ID
+// async function setNewAlarm() {
+//   const { startNotificationId, endNotificationId } =
+//     await scheduleRepeatingAlarmNotification(
+//       2, // ตัวอย่างวันจันทร์
+//       { hour: 7, minute: 0 },
+//       30, // ตัวอย่างเวลา 30 นาที
+//       "morning"
+//     );
 
-  return null; // Return null since it's a setup component
-};
+//   // เก็บ startNotificationId และ endNotificationId ในฐานข้อมูล
+//   saveAlarmInDatabase({
+//     startNotificationId,
+//     endNotificationId,
+//   });
+// }
 
-export default NotificationComponent;
+// // การยกเลิกปลุกที่เก็บในฐานข้อมูล
+// async function cancelAlarmFromDatabase(alarmId) {
+//   const alarmData = await getAlarmDataFromDatabase(alarmId); // ดึงข้อมูลการปลุกจากฐานข้อมูลตาม ID ที่เลือก
+
+//   if (alarmData) {
+//     await cancelSelectedAlarm(
+//       alarmData.startNotificationId,
+//       alarmData.endNotificationId
+//     );
+
+//     // ลบการแจ้งเตือนจากฐานข้อมูลหรืออัปเดตสถานะ
+//     deleteAlarmInDatabase(alarmId);
+//   }
+// }

@@ -19,7 +19,6 @@ const styles = StyleSheet.create({
   },
   card: {
     backgroundColor: "#EBF0FF",
-
     borderRadius: 16,
     marginVertical: 10,
     marginHorizontal: 20, // Adjust as needed
@@ -29,7 +28,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     padding: 16,
-    paddingBottom: 0,
+    width:'100%'
   },
   alarmText: {
     color: "#7B1FA2",
@@ -48,7 +47,6 @@ const styles = StyleSheet.create({
     color: "#000000",
   },
   dayRow: {
-    marginTop: 12,
     paddingVertical: 8,
     backgroundColor: "#D5DBEE",
     borderBottomEndRadius: 10,

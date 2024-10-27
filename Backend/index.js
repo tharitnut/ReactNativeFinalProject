@@ -39,7 +39,7 @@ app.post("/upload/:userId", upload.single("image"), async (req, res) => {
   try {
     const username = req.params.userId;
     console.log(username);
-    
+
     console.log(req.file.path);
 
     if (!req.file) {
@@ -76,7 +76,7 @@ app.get("/api/alarm/:id", async (req, res) => {
 });
 
 app.post("/insert/alarm", async (req, res) => {
-  const { setAlarm, username } = req.body;
+  const { setAlarm, username, startNotifyId, endNotifyId } = req.body;
 
   try {
     console.log(`Updating alarm for user: ${setAlarm.duration}`);
@@ -92,6 +92,8 @@ app.post("/insert/alarm", async (req, res) => {
             day: setAlarm.day,
             duration: setAlarm.duration,
             alert: setAlarm.alert,
+            startNotifyId: startNotifyId,
+            endNotifyId: endNotifyId,
           },
         },
       }
@@ -207,7 +209,7 @@ app.post("/users/register", async (req, res) => {
 app.get("/api/user/:userId", async (req, res) => {
   try {
     const username = req.params.userId;
-  console.log(username);
+    console.log(username);
 
     const response = await User.findOne({ username: username });
     console.log(response);
