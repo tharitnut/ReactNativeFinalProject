@@ -65,7 +65,7 @@ const SetAlarmScreen = (): React.JSX.Element => {
     alarmTime.setHours(hours, selectedMinute, 0, 0);
     //Auto GMT+7
 
-    if (selectedDays && selectedBodyPart) {
+    if (selectedDays.length > 0 && selectedBodyPart) {
       const username = await AsyncStorage.getItem("@username");
       const alarmData = {
         time: alarmTime,

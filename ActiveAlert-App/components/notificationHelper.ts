@@ -18,8 +18,8 @@ export async function scheduleRepeatingAlarmNotification(
 ) {
   await Notifications.scheduleNotificationAsync({
     content: {
-      title: "Alarm ⏰",
-      body: "It's time to wake up!",
+      title: "ActiveAlert ⏰",
+      body: "It's time for your workout!",
       sound: true,
     },
     trigger: {

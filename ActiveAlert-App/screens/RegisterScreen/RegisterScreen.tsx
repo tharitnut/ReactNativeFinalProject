@@ -20,6 +20,7 @@ import { useNavigation } from "@react-navigation/native";
 
 const RegisterScreen = (): React.JSX.Element => {
   const [showPassword, setShowPassword] = useState(false);
+  const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
   const navigation = useNavigation<any>();
 
   // define validation schema with Yup
@@ -138,13 +139,13 @@ const RegisterScreen = (): React.JSX.Element => {
                     placeholder="Confirm Password"
                     rightIcon={
                       <Icon
-                        name={showPassword ? "eye" : "eye-off"}
+                        name={showPasswordConfirm ? "eye" : "eye-off"}
                         type="feather"
-                        onPress={() => setShowPassword(!showPassword)}
+                        onPress={() => setShowPasswordConfirm(!showPasswordConfirm)}
                       />
                     }
                     keyboardType="default"
-                    secureTextEntry={!showPassword}
+                    secureTextEntry={!showPasswordConfirm}
                     onBlur={onBlur}
                     onChangeText={onChange}
                     value={value}
