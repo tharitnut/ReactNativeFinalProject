@@ -3,8 +3,10 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Image } from "@rneui/base";
-import { getFocusedRouteNameFromRoute, NavigationContainer } from "@react-navigation/native";
-import { useNavigation } from "@react-navigation/native";
+import {
+  getFocusedRouteNameFromRoute,
+  NavigationContainer,
+} from "@react-navigation/native";
 
 import LoginScreen from "../screens/LoginScreen/LoginScreen";
 import RegisterScreen from "../screens/RegisterScreen/RegisterScreen";
@@ -15,6 +17,7 @@ import AlarmScreen from "../screens/AlarmScreen/AlarmScreen";
 import ProfileScreen from "../screens/ProfileScreen/ProfileScreen";
 import SetAlarmScreen from "../screens/SetAlarmScreen/SetAlarmScreen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Keyboard } from "react-native";
 
 const HomeStack = createNativeStackNavigator();
 const StatsStack = createNativeStackNavigator();
@@ -66,6 +69,8 @@ function LoginStackScreen() {
 
 // Tab Navigator
 const TabContainer = () => {
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
+
   const home = require("../assets/home_focus.png");
   const home_outline = require("../assets/home.png");
   const flame = require("../assets/flame_focus.png");
@@ -74,6 +79,24 @@ const TabContainer = () => {
   const alarm_outline = require("../assets/alarm.png");
   const person = require("../assets/user_focus.png");
   const person_outline = require("../assets/user.png");
+
+  useEffect(() => {
+    // Listen for keyboard events
+    const keyboardDidShowListener = Keyboard.addListener(
+      "keyboardDidShow",
+      () => setKeyboardVisible(true)
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      "keyboardDidHide",
+      () => setKeyboardVisible(false)
+    );
+
+    // Cleanup event listeners
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
 
   return (
     <Tab.Navigator
@@ -97,10 +120,17 @@ const TabContainer = () => {
         headerShown: false,
         tabBarShowLabel: false,
         tabBarStyle: {
-          height: 70,
-          display: getFocusedRouteNameFromRoute(route) === "SetAlarm"
-            ? "none"
-            : "flex",
+          height:
+            keyboardVisible ||
+            getFocusedRouteNameFromRoute(route) === "SetAlarm"
+              ? 0
+              : 70,
+          display:
+            keyboardVisible ||
+            getFocusedRouteNameFromRoute(route) === "SetAlarm"
+              ? "none"
+              : "flex",
+          backgroundColor: "#A3D7F2",
         },
         tabBarActiveBackgroundColor: "#A3D7F2",
         tabBarInactiveBackgroundColor: "#A3D7F2",
@@ -130,13 +160,15 @@ const RootNavigator = () => {
   useEffect(() => {
     getUser();
   }, []);
-  
+
   if (loading) {
     return null;
   }
 
   return (
-    <Stack.Navigator initialRouteName={isLoggedIn ? "TabContainer" : "LoginStack"}>
+    <Stack.Navigator
+      initialRouteName={isLoggedIn ? "TabContainer" : "LoginStack"}
+    >
       <Stack.Screen
         name="TabContainer"
         component={TabContainer}

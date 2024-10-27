@@ -36,6 +36,7 @@ const chartConfig = {
   backgroundGradientTo: "#F0FAFF",
   color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`,
   barPercentage: 0.6,
+  decimalPlaces: 0,
 };
 
 const StatsScreen = (): React.JSX.Element => {

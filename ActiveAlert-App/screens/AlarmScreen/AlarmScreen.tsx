@@ -140,7 +140,6 @@ const AlarmScreen = (): React.JSX.Element => {
       <View style={styles.alarmContainer}>
         <Text style={styles.alarmTitle}>Alarm</Text>
       </View>
-
       <FlatList
         data={alarmData}
         keyExtractor={(item, index) => index.toString()}
@@ -148,7 +147,6 @@ const AlarmScreen = (): React.JSX.Element => {
         onRefresh={getData}
         refreshing={isRefreshing}
       />
-
       <TouchableOpacity
         style={styles.plusButton}
         onPress={() => {
@@ -159,7 +157,6 @@ const AlarmScreen = (): React.JSX.Element => {
           <Text style={styles.plusButtonText}>+</Text>
         </LinearGradient>
       </TouchableOpacity>
-
       <Modal
         isVisible={isModalVisible}
         onBackdropPress={() => setIsModalVisible(false)}
@@ -168,7 +165,9 @@ const AlarmScreen = (): React.JSX.Element => {
           <TouchableOpacity
             onPress={() => handleDeleteAlarm(selectedIndex ?? null)}
           >
-            <Text style={styles.modalText}>Delete Alarm</Text>
+            <Text style={[styles.modalText, { color: "red" }]}>
+              Delete Alarm
+            </Text>
           </TouchableOpacity>
           <View style={styles.divider} />
           <TouchableOpacity onPress={() => setIsModalVisible(false)}>
