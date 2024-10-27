@@ -104,10 +104,15 @@ const SetAlarmScreen = (): React.JSX.Element => {
           default:
             break;
         }
-        await scheduleRepeatingAlarmNotification(dayIndex, {
-          hour: hours,
-          minute: selectedMinute,
-        });
+        await scheduleRepeatingAlarmNotification(
+          dayIndex,
+          {
+            hour: hours,
+            minute: selectedMinute,
+          },
+          selectedDuration,
+          selectedBodyPart
+        );
       });
       Alert.alert("Alarms Set", "Multiple alarms have been scheduled.");
       // Alert.alert("Alarm Set", `Alarm set for ${alarmTime.toLocaleTimeString()}`);
